@@ -24,7 +24,7 @@ const router = createRouter({
     },
     {
       path: "/authentication",
-      name: "Autnentication",
+      name: "Authentication",
       component: AuthenticationView,
       meta: { requiresAuth: true },
     },

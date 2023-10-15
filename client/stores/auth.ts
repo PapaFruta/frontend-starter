@@ -13,7 +13,7 @@ export const useAuthStore = defineStore(
             
             const response = await fetchy("api/vertify", "GET" );
             console.log('status:',response)
-            // currentAuthStatus.value = status;
+            currentAuthStatus.value = response.isVerified;
 
             return currentAuthStatus.value;
         }

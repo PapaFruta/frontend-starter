@@ -13,23 +13,25 @@ onMounted(async () => {
 });
 
 const submitAuthentication = async () => {
+    const _id = id.value
     try {
         await fetchy("api/vertify/:ids", "PATCH", {
-            body: { id },
+            body: { _id },
         });
     } catch (_) {
         return;
     }
-    status.value = await getRecentStatus();
+    status.value = (await getRecentStatus());
 };
 </script>
 
 
 <template>
+
   <h2>authentication status: </h2>
   <li>hi: {{status}}</li>
-  <form @submit.prevent = "submitAuthentication()">
-    <label for="content">Post Contents:</label>
+  <form v-if="!status" @submit.prevent = "submitAuthentication()">
+    <label for="content">Government IDs:</label>
     <textarea id="content" v-model="id" placeholder="submit your government id" required> </textarea>
     <button type="submit" class="pure-button-primary pure-button">Submit authentication</button>
   </form>
