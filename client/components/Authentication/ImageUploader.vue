@@ -1,3 +1,7 @@
+<template>
+    hi
+</template>
+
 <!-- <script >
 export default {
   data() {
