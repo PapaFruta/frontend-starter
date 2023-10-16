@@ -34,7 +34,7 @@ const submitAuthentication = async () => {
 };
 </script>
 
-<!-- /v-if="!status" -->
+
 <template>
 <div>
     <h1>Authentication</h1>
@@ -45,7 +45,5 @@ const submitAuthentication = async () => {
 </template>
 
 <style scoped>
-h2 {
 
-}
 </style>

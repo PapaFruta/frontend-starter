@@ -21,11 +21,8 @@ const firebaseConfig = {
   appId: "1:1051328712035:web:5488f26fae65422bf55756"
 };
 
-
-//Initialize a firebase application
 initializeApp(firebaseConfig);
 
-// Initialize Cloud Storage and get a reference to the service
 const storage = getStorage();
 
 
@@ -64,12 +61,12 @@ const uploadImage = () => {
       <button @click = "uploadImage">Upload ID</button>
       <br />
       <strong>
-        <!-- <p>{{ imgUrl }}</p> -->
+
       </strong>
     </div>
   </template>
   
  
   <style>
-  /* You can add styles here if you want */
+ 
   </style>

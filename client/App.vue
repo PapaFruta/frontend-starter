@@ -48,16 +48,16 @@ onBeforeMount(async () => {
 @import "./assets/toast.css";
 
 .app-layout {
-  display: flex; /* Establishes a flex container */
-  height: 100vh; /* Ensures full viewport height */
+  display: flex; 
+  height: 100vh;
 }
 
 .nav {
   padding: 1em 2em;
   background-color: lightgray;
-  width: 5%; /* Set the width of the navigation bar to 10% of the view width */
-  height: 100%; /* Full height of the parent container */
-  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+  width: 5%; 
+  height: 100%; 
+  box-sizing: border-box; 
 }
 
 .menu {
@@ -65,13 +65,13 @@ onBeforeMount(async () => {
   background-color: lightgray;
   margin-left: 1%;
   width: 20%;
-  overflow-y: auto; /* Adds scroll if content overflows */
+  overflow-y: auto;
 }
 
 .view-container {
   margin-left: 1%;
-  flex-grow: 1; /* Takes up the remaining space, so it fills up the rest of the horizontal space */
-  overflow-y: auto; /* Adds scroll if content overflows */
+  flex-grow: 1; 
+  overflow-y: auto;
 }
 
 /* Other styles remain unchanged */
