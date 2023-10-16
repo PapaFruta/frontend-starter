@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
 import { useAuthStore } from "@/stores/auth";
 import { fetchy } from "@/utils/fetchy";
+import { onMounted, ref } from "vue";
+import ImageUploader from "./ImageUploader.vue";
 
 const { currentAuthStatus, getRecentStatus } = useAuthStore();
 
@@ -11,6 +12,14 @@ const status = ref();
 onMounted(async () => {
     status.value = await getRecentStatus();
 });
+
+
+const newImageSrc = ref('');
+
+const handleNewImageSrc = (url:string) => {
+  id.value = url;
+  submitAuthentication();
+};
 
 const submitAuthentication = async () => {
     const _id = id.value
@@ -25,35 +34,18 @@ const submitAuthentication = async () => {
 };
 </script>
 
-
+<!-- /v-if="!status" -->
 <template>
-
-  <h2>authentication status: </h2>
-  <li>hi: {{status}}</li>
-  <form v-if="!status" @submit.prevent = "submitAuthentication()">
-    <label for="content">Government IDs:</label>
-    <textarea id="content" v-model="id" placeholder="submit your government id" required> </textarea>
-    <button type="submit" class="pure-button-primary pure-button">Submit authentication</button>
-  </form>
+<div>
+    <h1>Authentication</h1>
+    <ImageUploader v-if="!status" @update:imageSrc="handleNewImageSrc"/>
+    <h2>Authentication status: {{ status ? 'verified' : 'not verified' }}</h2>
+</div>
+  
 </template>
 
 <style scoped>
-.authentication {
-    text-align: center;
-    padding: 50px;
-    border: 1px solid #e1e1e1;
-    border-radius: 5px;
-    width: 250px;
-    margin: 100px auto;
-}
+h2 {
 
-img {
-    width: 100px;
-    height: 100px;
-    margin-bottom: 20px;
-}
-
-button {
-    margin: 5px;
 }
 </style>

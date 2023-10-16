@@ -1,52 +1,67 @@
-<template>
+<!-- <template>
     hi
-</template>
+</template> -->
 
-<!-- <script >
-export default {
-  data() {
-    return {
-      imgSrc: 'https://i.imgur.com/U7afLiO.png', // Default image source
-      imgUrl: '', // Will hold the URL after upload
-    };
-  },
-  methods: {
-    handleFileChange(event) {
-      const file = event.target.files[0];
-      if (!file) return;
+<script setup lang="ts">
+import { initializeApp } from "firebase/app";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import { ref as vueRef, defineEmits } from "vue";
 
-      const formData = new FormData();
-      formData.append('image', file);
+const imageUpload = vueRef();
+const imageSrc = vueRef();
 
-      fetch('https://api.imgur.com/3/image', {
-        method: 'POST',
-        headers: {
-          Authorization: 'Bearer 52946cc1bf7630c6e24ebb5729346d4b5a225370', // Be sure to replace "YOUR_CLIENT_ID" with your actual Client ID from Imgur
-        },
-        body: formData,
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          this.imgSrc = data.data.link; // This will update the image source
-          this.imgUrl = data.data.link; // This will update the URL text
-        })
-        .catch((error) => {
-          console.error('Error:', error);
-        });
-    },
-  },
+const emit = defineEmits(['update:imageSrc']);
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD2j1ypdzQ-sYci8KhspfjAzLm_Up6VErw" ,
+  authDomain: "interlives-c40b5.firebaseapp.com",
+  projectId: "interlives-c40b5",
+  storageBucket:"interlives-c40b5.appspot.com",
+  messagingSenderId: "1051328712035",
+  appId: "1:1051328712035:web:5488f26fae65422bf55756"
 };
+
+
+//Initialize a firebase application
+initializeApp(firebaseConfig);
+
+// Initialize Cloud Storage and get a reference to the service
+const storage = getStorage();
+
+
+function handleFileChange(event:Event) {
+    if( event.target){
+      imageUpload.value = event.target.files[0];
+    }
+    }
+
+const uploadImage = () => {
+  console.log('trying to upload')
+  const imageRef = ref(storage, `auth/${imageUpload.name}`)
+
+  uploadBytes(imageRef,imageUpload.value).then((response)=>{
+    console.log(response)
+    getDownloadURL(ref(storage, response.ref.fullPath)).then((url)=>
+    {
+      console.log('this is url');
+      imageSrc.value = url
+      emit("update:imageSrc",url)
+    })
+    alert(`Image Uploaded!`)
+  })
+}
 </script>
 
 
 <template>
     <div>
-      <img :src="imgSrc" alt="Your Image" height="200px">
+      <img :src="imageSrc" alt="Your Image">
       <br />
-      <input type="file" @change="handleFileChange">
+      <input type="file" @change = "handleFileChange">
+      <button @click = "uploadImage">Upload ID</button>
       <br />
       <strong>
-        <p>{{ imgUrl }}</p>
+        <!-- <p>{{ imgUrl }}</p> -->
       </strong>
     </div>
   </template>
@@ -55,4 +70,3 @@ export default {
   <style>
   /* You can add styles here if you want */
   </style>
-   -->

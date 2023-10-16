@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import Menu from "@/components/Menu/Menu.vue";
+import Bar from "@/components/NavBar/Bar.vue";
 import { useToastStore } from "@/stores/toast";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
 import { computed, onBeforeMount } from "vue";
-import { RouterLink, RouterView, useRoute } from "vue-router";
+import { useRoute } from "vue-router";
 
 const currentRoute = useRoute();
 const currentRouteName = computed(() => currentRoute.name);
@@ -20,79 +22,45 @@ onBeforeMount(async () => {
   }
 });
 </script>
-
 <template>
-  <header>
-    <nav>
-      <div class="title">
-        <img src="@/assets/images/logo.svg" />
-        <RouterLink :to="{ name: 'Home' }">
-          <h1>Social Media App</h1>
-        </RouterLink>
-      </div>
-      <ul>
-        <li>
-          <RouterLink :to="{ name: 'Home' }" :class="{ underline: currentRouteName == 'Home' }"> Home </RouterLink>
-        </li>
-        <li v-if="isLoggedIn">
-          <RouterLink :to="{ name: 'Settings' }" :class="{ underline: currentRouteName == 'Settings' }"> Settings </RouterLink>
-        </li>
-        <li v-else>
-          <RouterLink :to="{ name: 'Login' }" :class="{ underline: currentRouteName == 'Login' }"> Login </RouterLink>
-        </li>
-        <li v-else>
-          <RouterLink :to="{ name: 'Authentication' }" :class="{ underline: currentRouteName == 'Authentication' }"> Authentication </RouterLink>
-        </li>
-      </ul>
-    </nav>
-    <article v-if="toast !== null" class="toast" :class="toast.style">
-      <p>{{ toast.message }}</p>
-    </article>
-  </header>
-  <RouterView />
+  <div class="app-layout">
+    <Bar class="nav"/>
+    <Menu class = "menu"/>
+    <div class="view-container">
+      <RouterView />
+    </div>
+  </div>
 </template>
 
 <style scoped>
 @import "./assets/toast.css";
 
-nav {
+.app-layout {
+  display: flex; /* Establishes a flex container */
+  height: 100vh; /* Ensures full viewport height */
+}
+
+.nav {
   padding: 1em 2em;
   background-color: lightgray;
-  display: flex;
-  align-items: center;
+  width: 5%; /* Set the width of the navigation bar to 10% of the view width */
+  height: 100%; /* Full height of the parent container */
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
 }
 
-h1 {
-  font-size: 2em;
-  margin: 0;
+.menu {
+  box-sizing: border-box;
+  background-color: lightgray;
+  margin-left: 1%;
+  width: 20%;
+  overflow-y: auto; /* Adds scroll if content overflows */
 }
 
-.title {
-  display: flex;
-  align-items: center;
-  gap: 0.5em;
+.view-container {
+  margin-left: 1%;
+  flex-grow: 1; /* Takes up the remaining space, so it fills up the rest of the horizontal space */
+  overflow-y: auto; /* Adds scroll if content overflows */
 }
 
-img {
-  height: 2em;
-}
-
-a {
-  font-size: large;
-  color: black;
-  text-decoration: none;
-}
-
-ul {
-  list-style-type: none;
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  flex-direction: row;
-  gap: 1em;
-}
-
-.underline {
-  text-decoration: underline;
-}
+/* Other styles remain unchanged */
 </style>
