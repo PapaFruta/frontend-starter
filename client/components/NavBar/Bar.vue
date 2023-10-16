@@ -6,7 +6,7 @@ import NavButton from './navButton.vue';
   <div class="container">
     nav place holder
     <div class="bar"></div>
-    <NavButton/>
+    <slot></slot>
   </div>
 </template>
 

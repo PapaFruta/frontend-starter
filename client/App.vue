@@ -24,7 +24,19 @@ onBeforeMount(async () => {
 </script>
 <template>
   <div class="app-layout">
-    <Bar class="nav"/>
+    <Bar class="nav">
+      <li>
+          <RouterLink :to="{ name: 'Home' }" :class="{ underline: currentRouteName == 'Home' }"> Home </RouterLink>
+        </li>
+        <li v-if="isLoggedIn">
+          <RouterLink :to="{ name: 'Settings' }" :class="{ underline: currentRouteName == 'Settings' }"> Settings </RouterLink>
+          <RouterLink :to="{ name: 'Authentication' }" :class="{ underline: currentRouteName == 'Authentication' }"> Authentication </RouterLink>
+        </li>
+        <li v-else>
+          <RouterLink :to="{ name: 'Login' }" :class="{ underline: currentRouteName == 'Login' }"> Login </RouterLink>
+        </li>
+
+    </Bar>
     <Menu class = "menu"/>
     <div class="view-container">
       <RouterView />
