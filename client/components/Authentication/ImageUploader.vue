@@ -5,7 +5,7 @@
 <script setup lang="ts">
 import { initializeApp } from "firebase/app";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
-import { ref as vueRef, defineEmits } from "vue";
+import { defineEmits, ref as vueRef } from "vue";
 
 const imageUpload = vueRef();
 const imageSrc = vueRef();
@@ -31,13 +31,16 @@ const storage = getStorage();
 
 function handleFileChange(event:Event) {
     if( event.target){
-      imageUpload.value = event.target.files[0];
+      const target = event.target as HTMLInputElement;
+      if(target?.files?.length) {
+          imageUpload.value = target.files[0];
+      }
     }
     }
 
 const uploadImage = () => {
-  console.log('trying to upload')
-  const imageRef = ref(storage, `auth/${imageUpload.name}`)
+  const file = imageUpload.value as File;
+  const imageRef = ref(storage, `auth/${file.name}`);
 
   uploadBytes(imageRef,imageUpload.value).then((response)=>{
     console.log(response)
