@@ -7,7 +7,10 @@ import { defineProps, ref } from 'vue';
 const props = defineProps({
   imgSrc: String,
   title: String,
-  route_link: String
+  route_link: {
+    type: String,
+    default: '/'  // default path
+  }
 });
 
 const isSelected = ref(false);
