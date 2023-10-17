@@ -36,7 +36,7 @@ const submitAuthentication = async () => {
 
 
 <template>
-<div>
+<div class = "column">
     <h1>Authentication</h1>
     <ImageUploader v-if="!status" @update:imageSrc="handleNewImageSrc"/>
     <h2>Authentication status: {{ status ? 'verified' : 'not verified' }}</h2>

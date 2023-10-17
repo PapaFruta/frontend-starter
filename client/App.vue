@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import Menu from "@/components/Menu/Menu.vue";
 import Bar from "@/components/NavBar/Bar.vue";
 import { useToastStore } from "@/stores/toast";
 import { useUserStore } from "@/stores/user";
@@ -24,20 +23,8 @@ onBeforeMount(async () => {
 </script>
 <template>
   <div class="app-layout">
-    <Bar class="nav">
-      <li>
-          <RouterLink :to="{ name: 'Home' }" :class="{ underline: currentRouteName == 'Home' }"> Home </RouterLink>
-        </li>
-        <li v-if="isLoggedIn">
-          <RouterLink :to="{ name: 'Settings' }" :class="{ underline: currentRouteName == 'Settings' }"> Settings </RouterLink>
-          <RouterLink :to="{ name: 'Authentication' }" :class="{ underline: currentRouteName == 'Authentication' }"> Authentication </RouterLink>
-        </li>
-        <li v-else>
-          <RouterLink :to="{ name: 'Login' }" :class="{ underline: currentRouteName == 'Login' }"> Login </RouterLink>
-        </li>
-
-    </Bar>
-    <Menu class = "menu"/>
+    <Bar class="nav"/>
+    <!-- <Menu class = "menu"/> -->
     <div class="view-container">
       <RouterView />
     </div>
@@ -53,19 +40,21 @@ onBeforeMount(async () => {
 }
 
 .nav {
-  padding: 1em 2em;
-  background-color: lightgray;
+  position: relative; /* this ensures the pseudo-element is positioned relative to this container */
   width: 5%; 
   height: 100%; 
   box-sizing: border-box; 
 }
 
-.menu {
-  box-sizing: border-box;
-  background-color: lightgray;
-  margin-left: 1%;
-  width: 20%;
-  overflow-y: auto;
+.nav::after {
+  content: ''; /* pseudo-elements require the content property, but it can be empty */
+  position: absolute; 
+  top: 50%; /* move the top edge of the pseudo-element to the center of the container */
+  right: 0; /* aligned to the right of the .nav container */
+  width: 1px; /* width of the bar, you can adjust as necessary */
+  height: 100%; /* height of the bar */
+  background-color: slategrey; /* or any color you prefer */
+  transform: translateY(-50%); /* shift the pseudo-element up by half of its height */
 }
 
 .view-container {

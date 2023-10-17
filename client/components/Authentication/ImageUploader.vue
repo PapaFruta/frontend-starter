@@ -55,14 +55,11 @@ const uploadImage = () => {
 
 <template>
     <div>
-      <img :src="imageSrc" alt="Your Image">
+      <img v-if="imageSrc" :src="imageSrc" alt="Your Image">
       <br />
       <input type="file" @change = "handleFileChange">
-      <button @click = "uploadImage">Upload ID</button>
+      <button class="pure-button pure-button-primary" @click = "uploadImage">Upload ID</button>
       <br />
-      <strong>
-
-      </strong>
     </div>
   </template>
   
