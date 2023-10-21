@@ -12,7 +12,6 @@ export const useAuthStore = defineStore(
         const getRecentStatus = async()=>{
             
             const response = await fetchy("api/vertify", "GET" );
-            console.log('status:',response)
             currentAuthStatus.value = response.isVerified;
 
             return currentAuthStatus.value;

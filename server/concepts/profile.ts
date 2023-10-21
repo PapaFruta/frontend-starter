@@ -34,7 +34,8 @@ export default class ProfileConcept{
      * @returns The profile data of the specified user.
      */
     async get(user:ObjectId){
-        return await this.profile.readOne({user});
+        const response = await this.profile.readOne({user})
+        return await {firstname:response?.firstname, lastname: response?.lastname, profiilePic: response?.profilePic};
     }
 
     /**

@@ -41,7 +41,7 @@ async function delete_() {
   position: relative; /* Make sure the ::after is positioned relative to this container */
   box-sizing: border-box;
   padding-left: 1%;
-  width: 20%;
+  width: 25%;
   overflow-y: auto;
 }
 

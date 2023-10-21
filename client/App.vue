@@ -41,7 +41,7 @@ onBeforeMount(async () => {
 
 .nav {
   position: relative; /* this ensures the pseudo-element is positioned relative to this container */
-  width: 5%; 
+  width: 10vh; 
   height: 100%; 
   box-sizing: border-box; 
 }

@@ -187,6 +187,13 @@ class Routes {
     return await Profile.get(user);
   }
 
+  @Router.get("/profile/:username")
+  async getProfileOfUser(session: WebSessionDoc, username : string){
+    const user = WebSession.getUser(session);
+    const other = await User.getUserByUsername(username);
+    return await Profile.get(other._id);
+  }
+
   @Router.patch("/profile/update")
   async updateProfile(session: WebSessionDoc, update: Partial<ProfileDoc>) {
     const user = WebSession.getUser(session);
