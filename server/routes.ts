@@ -24,6 +24,12 @@ class Routes {
     return await User.getUsers();
   }
 
+  @Router.get("/users/id/:id")
+  async getUserByID(id:string){
+    const _id = new ObjectId(id)
+    return await User.getUserById(_id);
+  }
+
   @Router.get("/users/:username")
   async getUser(username: string) {
     return await User.getUserByUsername(username);
@@ -185,6 +191,13 @@ class Routes {
   async getProfile(session: WebSessionDoc){
     const user = WebSession.getUser(session);
     return await Profile.get(user);
+  }
+
+  @Router.get("/profile/friend/:id")
+  async getProfileOfUserID(session: WebSessionDoc, id : string){
+    const user = WebSession.getUser(session);
+    const _id = new ObjectId(id)
+    return await Profile.get(_id);
   }
 
   @Router.get("/profile/:username")

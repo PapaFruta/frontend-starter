@@ -12,6 +12,9 @@ const displayFriend = ref(true);  // Corrected the ref name
 const displayRequest = ref(true);
 const friendList = ref([]);
 const requestList = ref([]);
+const removelist = ref([]);
+
+const removeFriend = ref(false);
 
 // other refs and computed properties...
 
@@ -23,23 +26,19 @@ function updateDisplayRequest(){
     displayRequest.value = !displayRequest.value;
 }
 
-const testFriendList = Array.from({ length: 20 }, (_, i) => ({
-  profilePic: "client/assets/images/Happy.png",
-  firstname: `test${i + 1}`,
-  lastname: `tester${i + 1}`
-}));
+const testFriendList = friendList.value
 
 const perPage = 7;
 const currentPage = ref(1); // starts from 1
 
 const displayedFriends = computed(() => {
+  if (!friendList.value.length) return []; // return empty array if friendList is empty
   const startIndex = (currentPage.value - 1) * perPage;
-  return testFriendList.slice(startIndex, startIndex + perPage);
+  return friendList.value.slice(startIndex, startIndex + perPage); // use friendList.value directly
 });
 
-
 function nextPage() {
-  if ((currentPage.value * perPage) < testFriendList.length) {
+  if ((currentPage.value * perPage) < friendList.value.length) {
     currentPage.value++;
   }
 }
@@ -51,24 +50,27 @@ function prevPage() {
 }
 
 async function updateRequest(){
-    let requestResponse = await fetchy("api/friend/requests","GET")
-    console.log('request Resposne: ', requestResponse)
-    let to_ids = requestResponse.filter(item=>item.status == "pending").map(item => item.from)
-    console.log('this is after filtering: ',requestResponse.filter(item=>item.status == "pending"))
-    let unique_to_ids = new Set(to_ids);
+    const prev = requestList.value
+    requestList.value = []
 
-    for(const username of unique_to_ids){
-        try{
-            let getResponse = await fetchy(`api/profile/${username}`,"GET")
-            if(getResponse.profilePic || getResponse.firstname || getResponse.lastname){
-                getResponse.username = username;
-                requestList.value.push(getResponse) 
+    try{
+        let requestResponse = await fetchy("api/friend/requests","GET")
+        let to_ids = requestResponse.filter(item=>item.status == "pending").map(item => item.from)
+        let unique_to_ids = new Set(to_ids);
+
+        for(const username of unique_to_ids){
+                let getResponse = await fetchy(`api/profile/${username}`,"GET")
+                console.log('this is username for requestion:', username, getResponse)
+                if(getResponse.profilePic || getResponse.firstname || getResponse.lastname){
+                    getResponse.username = username;
+                    requestList.value.push(getResponse) 
             }
-        }catch{
-            console.log('failed')
-        }
     }
-    console.log('this is to: ',requestList)
+    }catch{
+            console.log('failed fetching request')
+            requestList.value = prev
+        }
+    
 }
 
 async function acceptRequest(username){
@@ -79,16 +81,79 @@ async function acceptRequest(username){
     }catch{
         console.log('failed accept request')
     }
-    
     updateRequest();
 }
 
-onMounted(async () => {
-    friendList.value = await fetchy("api/friend","GET");
+async function rejectRequest(username){
+    console.log('this is rejecting username', username)
+    try{
+        const response = await fetchy(`api/friend/reject/${username}`, "PUT");
+        console.log('this is friend request rejected',response)
+    }catch{
+        console.log('failed rejected request')
+    }
+    updateRequest();
+}
 
+async function updateFriend(){
+    let requestFriend = await fetchy("api/friend","GET")
+    console.log('request Resposne: ', requestFriend)
+    const prev = friendList.value;
+
+    friendList.value = [];
+    for(const id of requestFriend){
+        try{
+            let getResponse = await fetchy(`api/profile/friend/${id}`,"GET")
+            console.log(`this is the response for ${id}: `,getResponse)
+            if(getResponse.profilePic || getResponse.firstname || getResponse.lastname){
+                const usernameResponse = await fetchy(`api/users/id/${id}`)
+                console.log('this is username resposne: ',usernameResponse)
+                getResponse.username = usernameResponse.username;
+                friendList.value.push(getResponse) 
+            }
+        }catch{
+            friendList.value = prev
+            console.log('failed fetch friend')
+        }
+    }
+    console.log('this is to: ',friendList)
+}
+
+async function toggleRemove(){
+    if (removeFriend.value && removelist.value){
+        console.log(`trying to remove`);
+        const removed = []
+        for(const username of removelist.value){
+            try{
+                let getResponse = await fetchy(`api/friend/remove/${username}`,"DELETE")
+                removed.push(username)
+            }
+            catch{
+                console.log(`failed to remove ${username}`)
+            }
+        }
+        alert(`Successfully removed ${removed}`)
+        removeFriend.value = false
+    }
+    else{
+        removeFriend.value = true
+        removelist.value = []
+    }
+}
+
+function cancelRemove(){
+    removeFriend.value = false;
+    removelist.value = [];
+}
+
+onMounted(async () => {
+    updateFriend();
     updateRequest();
 });
 
+function selectFriend(username:string){
+    removelist.value.push(username)
+}
 
 </script>
 
@@ -98,13 +163,19 @@ onMounted(async () => {
         <button class = "displayButton" @click = "updateDisplayFriend">
             <img class = "displayFriend" v-if = "displayFriend" src = "client\assets\images\down-arrow.png"/>
             <img class = "displayFriend" v-if = "!displayFriend" src = "client\assets\images\left-arrow.png"/>
-        </button></h2>
+        </button>
+        <button class = "remove-button" @click="toggleRemove"> Remove </button>
+        <button v-if = "removeFriend" class = "cancel-button" @click="cancelRemove"> Cancel </button>
+
+    </h2>
     <div class="links-column">
         <div class = "friendList" >
             <div class="friendList" v-if = "displayFriend">
             <Friend
               v-for="friend in displayedFriends"
+              @select = "(username) => selectFriend(username)"
               :key="friend.firstname"
+              :username = "friend.username"
               :profilePic="friend.profilePic"
               :firstname="friend.firstname"
               :lastname="friend.lastname"
@@ -122,6 +193,7 @@ onMounted(async () => {
         <Request
               v-for="friend in requestList"
               @accept = "username => acceptRequest(username)"
+              @reject = "username => rejectRequest(username)"
               :key="friend.firstname"
               :username = "friend.username"
               :profilePic="friend.profilePic"

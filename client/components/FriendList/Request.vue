@@ -9,17 +9,18 @@ const { username, profilePic, firstname, lastname } = defineProps({
 });
 
 const displayedName = ref(firstname + ' ' + lastname[0] + '.');
-const emit = defineEmits(['accept'])
+const emit = defineEmits(['accept','reject'])
 
 function acceptRequest(){
     console.log('child: this is username: ',username)
     emit('accept', username)
 }
 
-
-async function removeRequest(){
-    console.log('removed')
+function rejectRequest(){
+    console.log('child: this is username: ',username)
+    emit('reject', username)
 }
+
 
 </script>
 
@@ -31,7 +32,7 @@ async function removeRequest(){
     <button class="accept-button" @click="acceptRequest">
         <img class="accept-img" src="client\assets\images\accept.png" alt="Clickable accept"/>
     </button>
-    <button class="remove-button" @click="removeRequest">
+    <button class="remove-button" @click="rejectRequest">
         <img class="remove-img" src="client\assets\images\remove.png" alt="Clickable remove"/>
     </button>
 

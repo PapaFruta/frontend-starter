@@ -2,17 +2,27 @@
 import router from "@/router";
 import { useUserStore } from "@/stores/user";
 import { ref } from "vue";
+import ImageUploader from "../Authentication/ImageUploader.vue";
 
 const username = ref("");
 const password = ref("");
+const profilePic = ref("")
+const firstname = ref("")
+const lastname = ref("")
+
 const { createUser, loginUser, updateSession } = useUserStore();
 
 async function register() {
-  await createUser(username.value, password.value);
+  await createUser(username.value, password.value,firstname.value,lastname.value,profilePic.value);
   await loginUser(username.value, password.value);
   void updateSession();
   void router.push({ name: "Home" });
 }
+
+function handleImageUpload(url:string){
+  profilePic.value = url;
+}
+
 </script>
 
 <template>
@@ -26,6 +36,17 @@ async function register() {
       <div class="pure-control-group">
         <label for="aligned-password">Password</label>
         <input type="password" v-model.trim="password" id="aligned-password" placeholder="Password" required />
+      </div>
+      <div class="pure-control-group">
+        <label for="aligned-password">First Name</label>
+        <input v-model.trim="firstname" id="aligned-firstname" placeholder="First name" required />
+      </div>
+      <div class="pure-control-group">
+        <label for="aligned-password">last Name</label>
+        <input v-model.trim="lastname" id="aligned-lastname" placeholder="last name" required />
+      </div>
+      <div class="pure-control-group">
+          <ImageUploader @update:imageSrc="handleImageUpload"></ImageUploader>
       </div>
       <div class="pure-controls">
         <button type="submit" class="pure-button pure-button-primary">Register</button>

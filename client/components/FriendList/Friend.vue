@@ -1,19 +1,23 @@
 <script setup lang="ts">
-import { defineProps, ref } from 'vue';
+import { defineEmits, defineProps, ref } from 'vue';
 
-const { profilePic, firstname, lastname } = defineProps({
+const { username, profilePic, firstname, lastname } = defineProps({
+    username: String,
     profilePic: String,
     firstname: String,
     lastname: String,
 });
 
 const displayedName = ref(firstname + ' ' + lastname[0] + '.');
+const emit = defineEmits(['select'])
 
-
+function handleSelect(){
+    emit('select', username)
+}
 </script>
 
 <template>
-    <div class="container">
+    <div class="container" @click = "handleSelect">
         <img :src="profilePic" :alt="displayedName" class="profilePic"/>
         <div class="name">{{ displayedName }}</div>
     </div>
