@@ -6,6 +6,7 @@ import { fetchy } from "../../utils/fetchy";
 import Friend from "./Friend.vue";
 import AddFriend from "./addFriend.vue";
 import Request from "./Request.vue";
+import FriendList from "./FriendList.vue"
 
 
 const displayFriend = ref(true);  // Corrected the ref name
@@ -116,7 +117,7 @@ async function updateFriend(){
             console.log('failed fetch friend')
         }
     }
-    console.log('this is to: ',friendList)
+    console.log('this is friendList: ',friendList.value)
 }
 
 async function toggleRemove(){
@@ -134,6 +135,7 @@ async function toggleRemove(){
         }
         alert(`Successfully removed ${removed}`)
         removeFriend.value = false
+        updateFriend()
     }
     else{
         removeFriend.value = true
@@ -170,21 +172,10 @@ function selectFriend(username:string){
     </h2>
     <div class="links-column">
         <div class = "friendList" >
-            <div class="friendList" v-if = "displayFriend">
-            <Friend
-              v-for="friend in displayedFriends"
-              @select = "(username) => selectFriend(username)"
-              :key="friend.firstname"
-              :username = "friend.username"
-              :profilePic="friend.profilePic"
-              :firstname="friend.firstname"
-              :lastname="friend.lastname"
-            />
-            <div class = "pagination">
-            <button class = "pageButton" @click="prevPage" :disabled="currentPage === 1">Previous</button>
-            <button class = "pageButton" @click="nextPage" :disabled="currentPage * perPage >= testFriendList.length">Next</button>
-            </div>
-        </div>
+            <FriendList
+                :displayFriend="displayFriend"
+                :friendList="friendList"
+                @select = "(username)=>{selectFriend(username)}"/>
        <h2>Request 
         <button class = "displayButton" @click = "updateDisplayRequest">
             <img class = "displayRequest" v-if = "displayRequest" src = "client\assets\images\down-arrow.png"/>
@@ -232,24 +223,6 @@ function selectFriend(username:string){
 .text-link {
     text-decoration: none;
     color: inherit;
-}
-
-.pagination {
-  display: flex;
-  justify-content: space-between;
-  align-items: center; /* if you want to align vertically */
-  margin: 0; /* adjust as needed */
-}
-
-.pageButton{
-    background-color: #5B8FF3;
-    width: 100%;
-    color:white;
-    border:none;
-    font-size: 2vh;
-    padding: 1vh ;
-    border-radius: 5px;
-    margin-right: 10%; /* Space on the right */
 }
 
 .spacer {
