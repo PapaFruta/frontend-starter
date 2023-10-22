@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from "vue-router";
 
 import { useUserStore } from "@/stores/user";
 import AuthenticationView from "../views/AuthenticationView.vue";
+import ChatView from "../views/ChatView.vue";
 import FriendView from "../views/FriendView.vue";
 import HomeView from "../views/HomeView.vue";
 import LoginView from "../views/LoginView.vue";
@@ -45,6 +46,12 @@ const router = createRouter({
       path: "/friend",
       name: "Friend",
       component: FriendView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/chat",
+      name: "Chat",
+      component: ChatView,
       meta: { requiresAuth: true },
     },
     {

@@ -2,10 +2,11 @@
 import { computed, defineEmits, defineProps, ref } from 'vue';
 import Friend from "./Friend.vue";
 
-const { displayFriend, friendList} = defineProps({
-    displayFriend: Boolean,
-    friendList: Array<Object>,
-});
+// const { displayFriend, friendList} = defineProps({
+//     displayFriend: Boolean,
+//     friendList: Array<Object>,
+// });
+const props = defineProps(["displayFriend","friendList"])
 
 const emit = defineEmits(['select']);
 
@@ -16,14 +17,15 @@ function selectFriend(username:String){
 const perPage = 7;
 const currentPage = ref(1);
 
-const displayedFriends = computed(() => {
-  if (!friendList.length) return []; // return empty array if friendList is empty
-  const startIndex = (currentPage.value - 1) * perPage;
-  return friendList.slice(startIndex, startIndex + perPage); // use friendList directly
-});
+const displayedFriends = computed(()=>{
+    console.log('this is display: ',props.friendList)
+    const startIndex = (currentPage.value - 1) * perPage;
+    return props.friendList?.slice(startIndex,startIndex+perPage)
+})
+
 
 function nextPage() {
-  if ((currentPage.value * perPage) < friendList.length) {
+  if ((currentPage.value * perPage) < props.friendList.length) {
     currentPage.value++;
   }
 }
@@ -34,13 +36,12 @@ function prevPage() {
   }
 }
 
-console.log('this is what is passed in: ',friendList)
 
 </script>
 <template>
-    <div class="friendList" v-if = "displayFriend">
+    <div class="props.friendList" v-if = "displayFriend">
             <Friend
-              v-for="friend in friendList"
+              v-for="friend in displayedFriends"
               @select = "(username) => selectFriend(username)"
               :key="friend.firstname"
               :username = "friend.username"

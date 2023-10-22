@@ -1,18 +1,13 @@
 <script setup lang="ts">
 import { defineEmits, defineProps, ref } from 'vue';
 
-const { username, profilePic, firstname, lastname } = defineProps({
-    username: String,
-    profilePic: String,
-    firstname: String,
-    lastname: String,
-});
+const props = defineProps(["username","profilePic","firstname","lastname"])
 
-const displayedName = ref(firstname + ' ' + lastname[0] + '.');
+const displayedName = ref(props.firstname + ' ' + props.lastname[0] + '.');
 const emit = defineEmits(['select'])
 
 function handleSelect(){
-    emit('select', username)
+    emit('select', props.username)
 }
 </script>
 

@@ -10,7 +10,7 @@ async function addFriend(){
     buttonClicked.value  = !buttonClicked.value
     const response = await fetchy("api/friend/request","POST",{
         body: {to:username.value,
-                duration:parseInt(duration.value)}
+                duration:parseInt(duration.value)*24*60*60*1000}
     });
     console.log('this is friend request ',response)
 }
