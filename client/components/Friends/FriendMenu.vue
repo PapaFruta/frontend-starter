@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import router from "@/router";
 import { useUserStore } from "@/stores/user";
-import { ref, onMounted, computed} from "vue";
+import { ref, onMounted, computed, Ref} from "vue";
 import { fetchy } from "../../utils/fetchy";
 import Friend from "./Friend.vue";
 import AddFriend from "./addFriend.vue";
@@ -11,9 +11,9 @@ import FriendList from "./FriendList.vue"
 
 const displayFriend = ref(true);  // Corrected the ref name
 const displayRequest = ref(true);
-const friendList = ref([]);
-const requestList = ref([]);
-const removelist = ref([]);
+const friendList: Ref<Object[]> = ref([]);
+const requestList: Ref<Object[]> = ref([]);
+const removelist: Ref<string[]> = ref([]);
 
 const removeFriend = ref(false);
 
@@ -56,7 +56,7 @@ async function updateRequest(){
 
     try{
         let requestResponse = await fetchy("api/friend/requests","GET")
-        let to_ids = requestResponse.filter(item=>item.status == "pending").map(item => item.from)
+        let to_ids = requestResponse.filter((item:Object)=>item.status == "pending").map((item:Object) => item.from)
         let unique_to_ids = new Set(to_ids);
 
         for(const username of unique_to_ids){
@@ -74,7 +74,7 @@ async function updateRequest(){
     
 }
 
-async function acceptRequest(username){
+async function acceptRequest(username:string){
     console.log('this is username', username)
     try{
         const response = await fetchy(`api/friend/accept/${username}`, "PUT");
@@ -85,7 +85,7 @@ async function acceptRequest(username){
     updateRequest();
 }
 
-async function rejectRequest(username){
+async function rejectRequest(username:string){
     console.log('this is rejecting username', username)
     try{
         const response = await fetchy(`api/friend/reject/${username}`, "PUT");
@@ -107,7 +107,7 @@ async function updateFriend(){
             let getResponse = await fetchy(`api/profile/friend/${id}`,"GET")
             console.log(`this is the response for ${id}: `,getResponse)
             if(getResponse.profilePic || getResponse.firstname || getResponse.lastname){
-                const usernameResponse = await fetchy(`api/users/id/${id}`)
+                const usernameResponse = await fetchy(`api/users/id/${id}`,"GET")
                 console.log('this is username resposne: ',usernameResponse)
                 getResponse.username = usernameResponse.username;
                 friendList.value.push(getResponse) 

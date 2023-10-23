@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
-import FriendMenu from "../components/FriendList/FriendMenu.vue"
+import FriendMenu from "../components/Friends/FriendMenu.vue";
 
 const { currentUsername } = storeToRefs(useUserStore());
 const { logoutUser, deleteUser } = useUserStore();

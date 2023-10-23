@@ -20,12 +20,12 @@ export default class ChatConcept{
      * @param message - The initial message for the chat.
      * @returns An object with a message indicating success and the chat data.
      */
-    async startChat(user1: ObjectId, user2: ObjectId, message: string) {
+    async startChat(user1: ObjectId, user2: ObjectId) {
         if (await this.checkDuplicate(user1, user2)) {
             return { msg: "Chat already exists!" };
         }
 
-        const _id = await this.chats.createOne({ user1, user2, message: [[user1, message]] });
+        const _id = await this.chats.createOne({ user1, user2});
         return { msg: "Chat started", chat: await this.chats.readOne({ _id }) };
     }
 
@@ -41,11 +41,18 @@ export default class ChatConcept{
         const chat = await this.chats.readOne({ $or: [{ user1, user2 }, { user1: user2, user2: user1 }] });
 
         if (chat) {
-            chat.message.push([user1, message]);
+            if(chat.message){
+                chat.message.push([user1, message]);
+            }
+            else{
+                chat.message = [[user1,message]]
+            }
+            
             await this.chats.updateOne({ $or: [{ user1, user2 }, { user1: user2, user2: user1 }] }, chat);
             return { msg: "Message sent", chat: await this.chats.readOne({ $or: [{ user1, user2 }, { user1: user2, user2: user1 }] }) };
         } else {
-            const _id = await this.startChat(user1, user2, message);
+            const _id = await this.startChat(user1, user2);
+            await this.chats.updateOne({_id},{message:[[user1,message]]})
             return { msg: "Created a new chat for you", chat: await this.chats.readOne({ _id }) };
         }
     }

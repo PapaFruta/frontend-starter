@@ -215,26 +215,26 @@ class Routes {
 
   //--------------- Chat -------------
 
-  @Router.post("/chat/")
-  async startChat(session: WebSessionDoc, to: string, message: string){
+  @Router.post("/chat")
+  async startChat(session: WebSessionDoc, to: string){
     const user1 = WebSession.getUser(session);
     const user2 = await User.getUserByUsername(to);
 
     if(await ExpireFriend.isFriend(user1,user2._id)){
-      return await Chat.startChat(user1,user2._id, message);
+      return await Chat.startChat(user1,user2._id);
     }
     throw new Error('You two are not friend')
   } 
 
   //get all message
-  @Router.get("/chat/")
+  @Router.get("/chat/:to")
   async getChat(session: WebSessionDoc, to: string){
     const user1 = WebSession.getUser(session);
     const user2 = await User.getUserByUsername(to);
     return await Chat.getChat(user1,user2._id);
   }
 
-  @Router.patch("/chat/")
+  @Router.patch("/chat")
   async sendMessage(session:WebSessionDoc, to: string, message: string){
     const user1 = WebSession.getUser(session);
     const user2 = await User.getUserByUsername(to);

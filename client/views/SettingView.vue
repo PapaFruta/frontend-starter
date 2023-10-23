@@ -43,6 +43,7 @@ async function delete_() {
   padding-left: 1%;
   width: 25%;
   overflow-y: auto;
+  height: 100%;
 }
 
 .menu::after {
