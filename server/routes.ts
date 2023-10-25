@@ -97,8 +97,8 @@ class Routes {
   }
 
   //--------- Post --------------
-  @Router.get("/posts")
-  async getPosts(author?: string) {
+  @Router.get("/posts/:author")
+  async getPosts(author: string) {
     let posts;
     if (author) {
       const id = (await User.getUserByUsername(author))._id;
@@ -110,9 +110,9 @@ class Routes {
   }
 
   @Router.post("/posts")
-  async createPost(session: WebSessionDoc, photos: Array<string>, caption?: string) {
+  async createPost(session: WebSessionDoc, photo: string, caption?: string) {
     const user = WebSession.getUser(session);
-    const created = await Post.create(user, photos, caption);
+    const created = await Post.create(user, photo, caption);
     return { msg: created.msg, post: await Responses.post(created.post) };
   }
 
@@ -249,13 +249,13 @@ class Routes {
 
   //create album
   @Router.post("/chat/album")
-  async createAlbum(session:WebSessionDoc,to: string, title: string){
+  async createAlbum(session:WebSessionDoc,to: string, title: string,photos: Array<string>){
     const user = WebSession.getUser(session);
     const friend = (await User.getUserByUsername(to))._id
     //only allow to create album if they are friend
     if(await ExpireFriend.isFriend(user,friend)){
       const toUser = await User.getUserByUsername(to)
-      return await Album.createAlbum(user,toUser._id,title)
+      return await Album.createAlbum(user,toUser._id,title,photos)
     }
     throw Error('The users are not friend')
     
@@ -268,7 +268,7 @@ class Routes {
     return await Album.editAlbum(_id, update);
   }
 
-  @Router.get("/chat/album")
+  @Router.get("/chat/album/:to")
   async getAlbum(session:WebSessionDoc, to: string){
     const author = WebSession.getUser(session);
     const friend =await User.getUserByUsername(to)
@@ -292,26 +292,34 @@ class Routes {
     return await Hangout.createHangout(author, date , activity, location);
   }
 
-  @Router.get("/hangout/created")
-  async getHangoutCreated(session:WebSessionDoc, user: ObjectId){
+  @Router.get("/hangout/user/:user")
+  async getHangoutCreated(session:WebSessionDoc, user: string){
     const author = WebSession.getUser(session);
-    user = new ObjectId(user)
-    return await Hangout.getHangoutCreated(user);
+    const user_id = (await User.getUserByUsername(user))._id;
+    return await Hangout.getHangoutCreated(user_id);
   }
 
   @Router.get("/hangout/accepted")
-  async getHangoutAccepted(session:WebSessionDoc, user: ObjectId){
+  async getHangoutAccepted(session:WebSessionDoc){
     const author = WebSession.getUser(session);
-    user = new ObjectId(user)
+    // user = new ObjectId(user)
 
-    return await Hangout.getHangoutAccepted(user);
+    return await Hangout.getHangoutAccepted(author);
   }
+  
   
   @Router.patch("/hangout/:id/accept")
   async acceptHangout(session:WebSessionDoc, id:ObjectId){
     const author = WebSession.getUser(session);
 
     return await Hangout.acceptHangout(id,author);
+  }
+
+  @Router.patch("/hangout/:id/cancel")
+  async cancelHangout(session:WebSessionDoc, id:ObjectId){
+    const author = WebSession.getUser(session);
+
+    return await Hangout.cancelAccept(id,author);
   }
 
   @Router.patch("/hangout/:id/suggest")

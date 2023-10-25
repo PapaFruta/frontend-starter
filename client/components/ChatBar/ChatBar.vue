@@ -44,6 +44,7 @@ onMounted(()=>{
             class = "friendList"
             :displayFriend="true"
             :friendList="friendList"
+            :chat="true"
             @select = "(username)=>{selectFriend(username)}"/>
     </div>  
 </template>

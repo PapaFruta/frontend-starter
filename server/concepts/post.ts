@@ -11,7 +11,7 @@ export interface PostOptions {
 // Define the primary structure for posts in the database
 export interface PostDoc extends BaseDoc {
   author: ObjectId;
-  photos: Array<string>;
+  photos: string;
   caption?: string;
 }
 
@@ -26,7 +26,7 @@ export default class PostConcept {
    * @param caption - Optional caption for the post.
    * @returns Confirmation message with the created post data.
    */
-  async create(author: ObjectId, photos: Array<string>, caption?: string) {
+  async create(author: ObjectId, photos: string, caption?: string) {
     const _id = await this.posts.createOne({ author, photos, caption });
     return { msg: "Post successfully created!", post: await this.posts.readOne({ _id }) };
   }

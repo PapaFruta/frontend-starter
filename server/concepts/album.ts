@@ -16,8 +16,8 @@ export default class AlbumConcept{
    */
     public readonly albums = new DocCollection<AlbumDoc>("albums");
 
-    async createAlbum(from: ObjectId, to: ObjectId, title: string){
-        const _id = await this.albums.createOne({ from,to,title,photos: [] });
+    async createAlbum(from: ObjectId, to: ObjectId, title: string, photos: Array<string>){
+        const _id = await this.albums.createOne({ from,to,title,photos: photos });
         return { msg: "Album successfully created!", album: await this.albums.readOne({ _id }) };
     }
 

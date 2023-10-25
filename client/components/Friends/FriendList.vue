@@ -6,7 +6,7 @@ import Friend from "./Friend.vue";
 //     displayFriend: Boolean,
 //     friendList: Array<Object>,
 // });
-const props = defineProps(["displayFriend","friendList"])
+const props = defineProps(["displayFriend","friendList","chat"])
 
 const emit = defineEmits(['select']);
 
@@ -48,10 +48,11 @@ function prevPage() {
               :profilePic="friend.profilePic"
               :firstname="friend.firstname"
               :lastname="friend.lastname"
+              :chat = "chat"
             />
-            <div class = "pagination">
-            <button class = "pageButton" @click="prevPage" :disabled="currentPage === 1">Previous</button>
-            <button class = "pageButton" @click="nextPage" :disabled="currentPage * perPage >= friendList.length">Next</button>
+            <div class = "pagination" v-if = "displayFriend.length > perPage">
+              <button class = "pageButton" @click="prevPage" :disabled="currentPage === 1">Previous</button>
+              <button class = "pageButton" @click="nextPage" :disabled="currentPage * perPage >= friendList.length">Next</button>
             </div>
         </div>
 </template>

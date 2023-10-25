@@ -23,33 +23,41 @@ function rejectRequest(){
 
 
 </script>
-
 <template>
-    <div class="container">
-        <img :src="profilePic" :alt="displayedName" class="profilePic"/>
-        <div class="name">{{ displayedName }}</div>
+    <div class="containers">
+        <div class="display">
+            <img :src="profilePic" :alt="displayedName" class="profilePic"/>
+            <div class="name">{{ displayedName }}</div>
+        </div>
+        <div class = "buttons">
+            <button class="accept-button" @click="acceptRequest">
+            <img class="accept-img" src="client\assets\images\accept.png" alt="Clickable accept"/>
+            </button>
+            <button class="remove-button" @click="rejectRequest">
+                <img class="remove-img" src="client\assets\images\remove.png" alt="Clickable remove"/>
+            </button>
+        </div>
+       
     </div>
-    <button class="accept-button" @click="acceptRequest">
-        <img class="accept-img" src="client\assets\images\accept.png" alt="Clickable accept"/>
-    </button>
-    <button class="remove-button" @click="rejectRequest">
-        <img class="remove-img" src="client\assets\images\remove.png" alt="Clickable remove"/>
-    </button>
-
 </template>
-s
+
 
 <style scoped>
-.container{
-    display: inline-flex; /* Changed from block to inline-flex */
-    border: 1px red solid;
+.containers{
+    display: flex; /* Changed from inline-flex to flex to ensure full width */
     padding: 5px;
     margin-bottom: 3%;
     height: 5%;
 }
 
+/* .buttons{
+    margin-left: 35%;
+} */
+
 .accept-button{
-    width: 15%;
+    margin-top: 8%;
+    margin-left: 35%;
+    width: 30%;
     border: none;
     background-color: transparent;
 }
@@ -59,7 +67,7 @@ s
 }
 
 .remove-button{
-    width: 15%;
+    width: 30%;
     border: none;
     background-color: transparent;
 }
@@ -73,20 +81,30 @@ s
     aspect-ratio: 1; /* Ensures that width and height are equal */
 }
 
-.profilePic{
-    width: 100%; /* Make the image fill the container */
-    height: 100%; /* Make the image fill the container */
-    width: 20%; 
-    border: 1px grey solid;
-    border-radius: 50%;
+.display {
+    display: flex;           
+    align-items: center;     
+    padding: 1%;
+    margin-bottom: 2%;
+    cursor: pointer; 
 }
 
 .name {
-    display: flex;
+    margin: 0;               
     margin-left: 5%;
-    font-size: 2vw; /* adjust as needed */
-    white-space: nowrap; /* prevents the text from breaking into multiple lines */
-    overflow: hidden; /* prevents text from spilling out of the container */
-    /* border: 1px grey solid; */
+    font-size: 1.5vw;
+    white-space: nowrap;
+    overflow: hidden;
+    /* border: 1px red solid; */
+}
+
+/* Removed .profilePic-container as it's not being used in the template */
+
+.profilePic {
+    width: 8vh; /* Equals twice the desired radius */
+    height: 8vh; /* Equals twice the desired radius */
+    border-radius: 50%; /* Necessary for a circle shape */
+    object-fit: cover; /* Ensures the image covers the frame without distortion */
+    border: 1px grey solid;
 }
 </style>

@@ -1,23 +1,17 @@
 <script setup lang="ts">
-import router from "@/router";
-import { useUserStore } from "@/stores/user";
-import { ref, onMounted, computed, Ref} from "vue";
+import { Ref, computed, onMounted, ref } from "vue";
 import { fetchy } from "../../utils/fetchy";
-import Friend from "./Friend.vue";
-import AddFriend from "./addFriend.vue";
+import FriendList from "./FriendList.vue";
 import Request from "./Request.vue";
-import FriendList from "./FriendList.vue"
+import AddFriend from "./addFriend.vue";
 
-
-const displayFriend = ref(true);  // Corrected the ref name
+const displayFriend = ref(true);
 const displayRequest = ref(true);
 const friendList: Ref<Object[]> = ref([]);
 const requestList: Ref<Object[]> = ref([]);
 const removelist: Ref<string[]> = ref([]);
 
 const removeFriend = ref(false);
-
-// other refs and computed properties...
 
 function updateDisplayFriend(){
     displayFriend.value = !displayFriend.value;
@@ -61,14 +55,12 @@ async function updateRequest(){
 
         for(const username of unique_to_ids){
                 let getResponse = await fetchy(`api/profile/${username}`,"GET")
-                console.log('this is username for requestion:', username, getResponse)
                 if(getResponse.profilePic || getResponse.firstname || getResponse.lastname){
                     getResponse.username = username;
                     requestList.value.push(getResponse) 
             }
     }
     }catch{
-            console.log('failed fetching request')
             requestList.value = prev
         }
     
@@ -78,7 +70,6 @@ async function acceptRequest(username:string){
     console.log('this is username', username)
     try{
         const response = await fetchy(`api/friend/accept/${username}`, "PUT");
-        console.log('this is friend request accepted',response)
     }catch{
         console.log('failed accept request')
     }
@@ -89,7 +80,6 @@ async function rejectRequest(username:string){
     console.log('this is rejecting username', username)
     try{
         const response = await fetchy(`api/friend/reject/${username}`, "PUT");
-        console.log('this is friend request rejected',response)
     }catch{
         console.log('failed rejected request')
     }
@@ -98,17 +88,14 @@ async function rejectRequest(username:string){
 
 async function updateFriend(){
     let requestFriend = await fetchy("api/friend","GET")
-    console.log('request Resposne: ', requestFriend)
     const prev = friendList.value;
 
     friendList.value = [];
     for(const id of requestFriend){
         try{
             let getResponse = await fetchy(`api/profile/friend/${id}`,"GET")
-            console.log(`this is the response for ${id}: `,getResponse)
             if(getResponse.profilePic || getResponse.firstname || getResponse.lastname){
                 const usernameResponse = await fetchy(`api/users/id/${id}`,"GET")
-                console.log('this is username resposne: ',usernameResponse)
                 getResponse.username = usernameResponse.username;
                 friendList.value.push(getResponse) 
             }
@@ -117,12 +104,10 @@ async function updateFriend(){
             console.log('failed fetch friend')
         }
     }
-    console.log('this is friendList: ',friendList.value)
 }
 
 async function toggleRemove(){
     if (removeFriend.value && removelist.value){
-        console.log(`trying to remove`);
         const removed = []
         for(const username of removelist.value){
             try{
@@ -161,7 +146,8 @@ function selectFriend(username:string){
 
 <template>
   <div >
-    <h2>Friends 
+    <div class = "links-row">
+        <h2>Friends 
         <button class = "displayButton" @click = "updateDisplayFriend">
             <img class = "displayFriend" v-if = "displayFriend" src = "client\assets\images\down-arrow.png"/>
             <img class = "displayFriend" v-if = "!displayFriend" src = "client\assets\images\left-arrow.png"/>
@@ -170,11 +156,15 @@ function selectFriend(username:string){
         <button v-if = "removeFriend" class = "cancel-button" @click="cancelRemove"> Cancel </button>
 
     </h2>
-    <div class="links-column">
+    </div>
+    
+    <div class = "container">
+        <div class="links-column">
         <div class = "friendList" >
             <FriendList
                 :displayFriend="displayFriend"
                 :friendList="friendList"
+                :chat="false"
                 @select = "(username)=>{selectFriend(username)}"/>
        <h2>Request 
         <button class = "displayButton" @click = "updateDisplayRequest">
@@ -191,13 +181,20 @@ function selectFriend(username:string){
               :firstname="friend.firstname"
               :lastname="friend.lastname"
             />
-        <AddFriend/>
         </div>  
+    </div>
+    <AddFriend/>
 </div>
   </div>
 </template>
 
 <style scoped>
+.container {
+  display: flex;
+  flex-direction: column; /* stack children vertically */
+  height: 85%; /* full height of the viewport */
+  justify-content: space-between; /* distributes items evenly, with first item at start and last item at end */
+}
 
 .displayButton{
     width: 5vh;
@@ -225,7 +222,20 @@ function selectFriend(username:string){
     color: inherit;
 }
 
-.spacer {
-    flex-grow: 1;
+.remove-button {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    margin-left: 18%;
+    cursor: pointer;
+    background-color: #5B8FF3;
+    color: #fff;
+    font-size: 3vh;
+    transition: background-color 0.2s;
 }
+
+.remove-button:hover {
+    background-color: #0056b3;
+}
+
 </style>

@@ -41,6 +41,11 @@ async function addFriend(){
     margin-top: 2%;
 }
 
+.addFriend:hover{
+    background-color: #0056b3;
+}
+
+
 
 input{
     /* flex-grow: 1; makes the input field take up all available space */
@@ -55,6 +60,10 @@ input{
     border:none;
     font-size: 4vh;
     margin-left: 1vh;
+}
+
+.add:hover{
+    background-color: #0056b3;
 }
 
 .form {

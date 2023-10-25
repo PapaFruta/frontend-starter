@@ -13,9 +13,9 @@ async function logout() {
   <div>
     <h1>Setting</h1>
     <div class="links-column">
-      <router-link to="/my-post" class="text-link">My post</router-link>
+      <router-link to="/hangout" class="text-link">My hangout</router-link>
       <router-link to="/authentication" class="text-link">My Authentication</router-link>
-      <router-link to="/setting" class="text-link">My Setting</router-link>
+      <router-link to="/profile" class="text-link">My profile</router-link>
       <router-link to="/" @click="logout">Log out</router-link>
     </div>  
   </div>

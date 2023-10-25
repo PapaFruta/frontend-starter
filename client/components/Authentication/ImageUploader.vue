@@ -43,7 +43,7 @@ const uploadImage = () => {
     console.log(response)
     getDownloadURL(ref(storage, response.ref.fullPath)).then((url)=>
     {
-      console.log('this is url');
+      // console.log('this is url from uploader: ',url);
       imageSrc.value = url
       emit("update:imageSrc",url)
     })
@@ -58,12 +58,31 @@ const uploadImage = () => {
       <img v-if="imageSrc" :src="imageSrc" alt="Your Image">
       <br />
       <input type="file" @change = "handleFileChange">
-      <button class="pure-button pure-button-primary" @click = "uploadImage">Upload ID</button>
+      <button @click = "uploadImage">Upload</button>
       <br />
     </div>
   </template>
   
  
-  <style>
+<style scoped>
+
+ img{
+  max-height: 300px;
+ }
+ 
+button{
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #007BFF;
+    color: #fff;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
  
   </style>

@@ -5,7 +5,7 @@ import NavButton from './navButton.vue';
   <div class="container">
     <NavButton imgSrc="client/assets/images/chat.png" title="Chat" route_link="/chat"/>
     <NavButton imgSrc="client/assets/images/friends.png" title="Friend" route_link="/friend"/>
-    <NavButton imgSrc="client/assets/images/Happy.png" title="Post" route_link="/"/>
+    <NavButton imgSrc="client/assets/images/Happy.png" title="Post" route_link="/post"/>
     <div class="spacer"></div> <!-- Spacer element -->
     <NavButton imgSrc="client/assets/images/setting.png" title="Setting" route_link="/setting" class="setting"/>
     <div class="bar"></div>

@@ -31,7 +31,7 @@ export default class HangoutConcept {
       const _id = await this.hangouts.createOne({ author, date, activity, location, acceptee: [], suggestion: [] });
       return { msg: "Hangout proposed", hangout: await this.hangouts.readOne({ _id }) };
     }
-    return {msg: validity.message}
+    throw new Error(validity.message)
   }
 
   /**
@@ -96,6 +96,18 @@ export default class HangoutConcept {
       hangout.acceptee.push(acceptee);
       await this.hangouts.updateOne({ _id }, hangout);
       return { msg: "You have accepted hangout" };
+    }
+
+    return new NotFoundError("This hangout does not exist!");
+  }
+
+  async cancelAccept(_id: ObjectId, acceptee: ObjectId){
+    const hangout = await this.hangouts.readOne({ _id});
+
+    if (hangout){
+      const updatedList = hangout.acceptee.filter((id)=>{id!=acceptee})
+      await this.hangouts.updateOne({_id}, {acceptee:updatedList})
+      return {msg: "YOu have successfully cancel your attendeance to this hangout"}
     }
 
     return new NotFoundError("This hangout does not exist!");
@@ -283,11 +295,6 @@ export default class HangoutConcept {
       }
     }
 
-    // Validate date format as mm/dd/yyyy, but only if a date is provided
-    const dateRegex = /^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\/(19|20)\d\d$/;
-    if (date && !dateRegex.test(date)) {
-      return { isValid: false, message: "Date must be in the format mm/dd/yyyy." };
-    }
 
     return { isValid: true, message: "Inputs are valid." };
   }
