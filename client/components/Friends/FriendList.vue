@@ -1,17 +1,19 @@
 <script setup lang="ts">
 import { computed, defineEmits, defineProps, ref } from 'vue';
 import Friend from "./Friend.vue";
+import LoginFormVue from '../Login/LoginForm.vue';
 
-// const { displayFriend, friendList} = defineProps({
-//     displayFriend: Boolean,
-//     friendList: Array<Object>,
-// });
-const props = defineProps(["displayFriend","friendList","chat"])
+const props = defineProps(["displayFriend", "friendList", "chat"]);
 
 const emit = defineEmits(['select']);
 
-function selectFriend(username:String){
-    emit('select',username)
+const selectedFriend = ref(""); // to store the currently selected friend's username
+
+function selectFriend(username: String){
+    console.log(`This is username intake: ${username}`)
+    selectedFriend.value = username;  // update the selectedFriend when a friend is clicked
+    console.log(`this selected friend: ${selectedFriend.value}`)
+    emit('select', username);
 }
 
 const perPage = 7;
@@ -40,15 +42,16 @@ function prevPage() {
 </script>
 <template>
     <div class="props.friendList" v-if = "displayFriend">
-            <Friend
-              v-for="friend in displayedFriends"
-              @select = "(username) => selectFriend(username)"
-              :key="friend.firstname"
-              :username = "friend.username"
-              :profilePic="friend.profilePic"
-              :firstname="friend.firstname"
-              :lastname="friend.lastname"
-              :chat = "chat"
+          <Friend
+                v-for="friend in displayedFriends"
+                @select="(username) => selectFriend(username)"
+                :key="`${friend.username}-${selectedFriend.value === friend.username}`"
+                :username="friend.username"
+                :profilePic="friend.profilePic"
+                :firstname="friend.firstname"
+                :lastname="friend.lastname"
+                :chat="chat"
+                :isSelected="selectedFriend.value === friend.username"
             />
             <div class = "pagination" v-if = "displayFriend.length > perPage">
               <button class = "pageButton" @click="prevPage" :disabled="currentPage === 1">Previous</button>

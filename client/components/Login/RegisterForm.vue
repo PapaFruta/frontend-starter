@@ -38,15 +38,17 @@ function handleImageUpload(url:string){
         <input type="password" v-model.trim="password" id="aligned-password" placeholder="Password" required />
       </div>
       <div class="pure-control-group">
-        <label for="aligned-password">First Name</label>
+        <label for="aligned-firstname">First Name</label>
         <input v-model.trim="firstname" id="aligned-firstname" placeholder="First name" required />
       </div>
       <div class="pure-control-group">
-        <label for="aligned-password">last Name</label>
+        <label for="aligned-lastname">last Name</label>
         <input v-model.trim="lastname" id="aligned-lastname" placeholder="last name" required />
       </div>
+      <hr/>
       <div class="pure-control-group">
-          <ImageUploader @update:imageSrc="handleImageUpload"></ImageUploader>
+          <label for="aligned-profile">Profile Picture:</label>
+          <ImageUploader id = "aligned-profile" @update:imageSrc="handleImageUpload"></ImageUploader>
       </div>
       <div class="pure-controls">
         <button type="submit" class="pure-button pure-button-primary">Register</button>

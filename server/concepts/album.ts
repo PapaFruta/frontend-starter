@@ -41,8 +41,8 @@ export default class AlbumConcept{
         return { msg: "Album successfully updated!", album: await this.albums.readOne({_id}) };
     }
 
-    async getAlbums(to: ObjectId) {
-        const album = await this.albums.readMany({$or:[{to:to},{from:to}]});
+    async getAlbums(from:ObjectId, to: ObjectId) {
+        const album = await this.albums.readMany({$or:[{to:to,from:from},{from:to,to:from}]});
         return album;
     }
 

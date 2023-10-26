@@ -5,7 +5,7 @@ import MultiImageUploader from '../Album/MultiImageUploader.vue';
 const message = ref('');
 const upload = ref(false)
 
-const emit = defineEmits(['send']);
+const emit = defineEmits(['send','created']);
 const props = defineProps({
     username:String
 })
@@ -23,11 +23,15 @@ async function startAlbum(){
     upload.value = !upload.value
 }
 
+function createdAlbum(){
+    emit('created')
+}
+
 
 </script>
 <template>
     <div class="uploader-container" v-if="upload">
-        <MultiImageUploader class="uploader" :username="props.username"/> 
+        <MultiImageUploader @created = "createdAlbum" class="uploader" :username="props.username"/> 
     </div>
 
     <div class="chatBox">
@@ -40,8 +44,10 @@ async function startAlbum(){
 <style scoped>
 .uploader-container {
     display: flex;  /* Enable flexbox */
-    justify-content: center;  /* Center the content horizontally */
+    align-items:center;
+    justify-content: center;  /*Center the content horizontally */
     height: 300px;  /* Set a height for the container. Adjust this value as needed. */
+    padding-bottom: 3%;
 }
 
 .chatBox {

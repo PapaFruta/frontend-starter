@@ -1,31 +1,49 @@
 import { ObjectId } from "mongodb";
 import DocCollection, { BaseDoc } from "../framework/doc";
 
-// Define the Chat document structure for MongoDB
+/**
+ * Represents an individual chat message with its sender, content, and timestamp.
+ */
+interface ChatMessage {
+    user: ObjectId;
+    message: string;
+    dateUpdated: Date;
+}
+
+/**
+ * Define the Chat document structure for MongoDB.
+ */
 export interface ChatDoc extends BaseDoc {
   user1: ObjectId;
   user2: ObjectId;
-  // Array of [userId, message] pairs representing a chat history
-  message: [[ObjectId, string]];
+  /** Array of chat messages representing chat history */
+  messages: ChatMessage[];
 }
 
-export default class ChatConcept{
-    // Initialize a collection for chats in MongoDB
+/**
+ * Represents a chat concept with CRUD operations.
+ */
+export default class ChatConcept {
+    /** Collection for chats in MongoDB */
     public readonly chats = new DocCollection<ChatDoc>("chats");
 
     /**
-     * Initiates a chat between two users. 
+     * Initiates a chat between two users.
      * @param user1 - The first user's ObjectId.
      * @param user2 - The second user's ObjectId.
-     * @param message - The initial message for the chat.
+     * @param initialMessage - The initial message for the chat.
      * @returns An object with a message indicating success and the chat data.
      */
-    async startChat(user1: ObjectId, user2: ObjectId) {
+    async startChat(user1: ObjectId, user2: ObjectId, initialMessage: string) {
         if (await this.checkDuplicate(user1, user2)) {
             return { msg: "Chat already exists!" };
         }
-
-        const _id = await this.chats.createOne({ user1, user2});
+        
+        const _id = await this.chats.createOne({
+            user1,
+            user2,
+            messages: []
+        });
         return { msg: "Chat started", chat: await this.chats.readOne({ _id }) };
     }
 
@@ -41,19 +59,12 @@ export default class ChatConcept{
         const chat = await this.chats.readOne({ $or: [{ user1, user2 }, { user1: user2, user2: user1 }] });
 
         if (chat) {
-            if(chat.message){
-                chat.message.push([user1, message]);
-            }
-            else{
-                chat.message = [[user1,message]]
-            }
-            
+            chat.messages.push({ user: user1, message: message, dateUpdated: new Date() });
             await this.chats.updateOne({ $or: [{ user1, user2 }, { user1: user2, user2: user1 }] }, chat);
             return { msg: "Message sent", chat: await this.chats.readOne({ $or: [{ user1, user2 }, { user1: user2, user2: user1 }] }) };
         } else {
-            const _id = await this.startChat(user1, user2);
-            await this.chats.updateOne({_id},{message:[[user1,message]]})
-            return { msg: "Created a new chat for you", chat: await this.chats.readOne({ _id }) };
+            const response = await this.startChat(user1, user2, message);
+            return { msg: "Created a new chat for you", chat: await this.chats.readOne({ _id: response.chat._id }) };
         }
     }
 
@@ -82,10 +93,6 @@ export default class ChatConcept{
      */
     async checkDuplicate(user1: ObjectId, user2: ObjectId) {
         const chat = await this.chats.readOne({ $or: [{ user1, user2 }, { user1: user2, user2: user1 }] });
-
-        if (chat) {
-            return true;
-        }
-        return false;
+        return !!chat;
     }
 }

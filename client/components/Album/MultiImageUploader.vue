@@ -5,19 +5,19 @@
                 <img :src="src" alt="Your Image">
             </div>
         </div>
-        <div v-if = "!fillTitle" class="upload-section">
+        <div v-if="!fillTitle" class="upload-section">
             <input type="file" @change="handleFileChange" multiple>
             <button @click="uploadImages">Upload</button>
-            <button v-if = "imageSrcs.length>0" @click="fillTitle = true">Next</button>
+            <button v-if="create && imageSrcs.length>0" @click="fillTitle = true">Next</button>
+            <button v-if="!create && imageSrcs.length>0" @click="updateAlbum">Update</button>
         </div>
-        <div   class="upload-section" v-if = "fillTitle">
+        <div v-if="fillTitle && create" class="upload-section">
             <label>Album Title</label>
-            <input v-model = "title" type = "text"/>
+            <input v-model="title" type="text"/>
             <button @click="createAlbum">Create</button>
         </div>
     </div>
 </template>
-
 <script setup lang="ts">
 import { initializeApp } from "firebase/app";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
@@ -30,9 +30,11 @@ const fillTitle = vueRef(false)
 const title = vueRef<string>('');
 
 const props = defineProps({
-    username:String
+    username:String,
+    create: { type: Boolean, default: true },
 })
-const emit = defineEmits(['update:imageSrcs']);
+
+const emit = defineEmits(['update:imageSrcs', 'created', 'update']);
 
 const firebaseConfig = {
   apiKey: "AIzaSyD2j1ypdzQ-sYci8KhspfjAzLm_Up6VErw",
@@ -47,6 +49,13 @@ initializeApp(firebaseConfig);
 
 const storage = getStorage();
 
+const resetComponent = () => {
+    imageUploads.value = [];
+    imageSrcs.value = [];
+    fillTitle.value = false;
+    title.value = '';
+}
+
 function handleFileChange(event: Event) {
     if (event.target) {
         const target = event.target as HTMLInputElement;
@@ -54,6 +63,12 @@ function handleFileChange(event: Event) {
             imageUploads.value = Array.from(target.files);
         }
     }
+}
+
+
+const updateAlbum = () => {
+    emit('update', imageSrcs.value);
+    resetComponent();
 }
 
 const uploadImages = () => {
@@ -91,16 +106,14 @@ async function createAlbum(){
                                 title: title.value,
                                 photos: imageSrcs.value
         }})
-
+        emit('created');
         alert(response.msg)
     }
     catch{
         console.log(`Failing to create album`)
     }
     
-    imageSrcs.value = []
-    title.value = ''
-    fillTitle.value = false
+    resetComponent();
 }
 </script>
 
@@ -113,13 +126,14 @@ async function createAlbum(){
     align-items: center;
     height: 100%;
     gap: 10px;
+    padding: 2%;
 }
 
 .upload-section {
-    position: absolute; /* New */
-    top: 90%;        
-    left: 50%;         /* New */
-    transform: translate(-50%, -50%); /* New */
+    /* position: absolute;
+    top: 110%;        
+    left: 50%;        
+    transform: translate(-50%, -50%);  */
     display: flex;
     gap: 10px;
     align-items: center;
@@ -140,12 +154,6 @@ img {
     max-width: 100%;
     max-height: 250px;
 }
-
-/* .upload-section {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-} */
 
 button {
     padding: 10px 20px;

@@ -4,9 +4,6 @@ import { fetchy } from "../../utils/fetchy";
 import FriendList from "./FriendList.vue";
 import Request from "./Request.vue";
 import AddFriend from "./addFriend.vue";
-
-const displayFriend = ref(true);
-const displayRequest = ref(true);
 const friendList: Ref<Object[]> = ref([]);
 const requestList: Ref<Object[]> = ref([]);
 const removelist: Ref<string[]> = ref([]);
@@ -164,7 +161,7 @@ function selectFriend(username:string){
             <FriendList
                 :displayFriend="displayFriend"
                 :friendList="friendList"
-                :chat="false"
+                :chat="removeFriend"
                 @select = "(username)=>{selectFriend(username)}"/>
        <h2>Request 
         <button class = "displayButton" @click = "updateDisplayRequest">
@@ -189,6 +186,14 @@ function selectFriend(username:string){
 </template>
 
 <style scoped>
+.cancel-button{
+    background-color: #F8C511;
+}
+
+.cancel-button:hover {
+    background-color: #F8A911;  /* Darker red on hover */
+}
+
 .container {
   display: flex;
   flex-direction: column; /* stack children vertically */

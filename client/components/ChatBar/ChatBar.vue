@@ -48,6 +48,7 @@ onMounted(()=>{
             @select = "(username)=>{selectFriend(username)}"/>
     </div>  
 </template>
+
 <style scoped>
 .friendList {
     flex-wrap: wrap; /* allows the items to wrap to the next line */

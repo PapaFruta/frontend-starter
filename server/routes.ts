@@ -264,7 +264,7 @@ class Routes {
   @Router.patch("/chat/album/:_id")
   async editAlbum(session: WebSessionDoc, _id: ObjectId, update: Partial<AlbumDoc>){
     const user = WebSession.getUser(session);
-
+    
     return await Album.editAlbum(_id, update);
   }
 
@@ -272,7 +272,7 @@ class Routes {
   async getAlbum(session:WebSessionDoc, to: string){
     const author = WebSession.getUser(session);
     const friend =await User.getUserByUsername(to)
-    return await Album.getAlbums(( friend)._id);
+    return await Album.getAlbums(author,( friend)._id);
   }
 
   @Router.delete("/chat/album/:_id")

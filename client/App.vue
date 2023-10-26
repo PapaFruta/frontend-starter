@@ -58,7 +58,7 @@ onBeforeMount(async () => {
 }
 
 .view-container {
-  margin-left: 1%;
+  /* padding-left: 1%; */
   flex-grow: 1; 
   overflow-y: auto;
 }

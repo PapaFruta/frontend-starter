@@ -40,5 +40,6 @@ async function updateChat(username:string){
 
 .messages {
   flex-grow: 1; /* Allows this element to take up the remaining space */
+  max-width: 70%;
 }
 </style>

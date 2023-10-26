@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { onMounted, ref, watch, nextTick } from "vue";
+import { onMounted, ref, watch, nextTick,onBeforeUnmount } from "vue";
 import { fetchy } from "../../utils/fetchy";
 import MessageBox from "./MessageBox.vue";
 import { useUserStore } from "@/stores/user";
 import {getProfile, getUser} from "../../utils/getServices.ts"
+import Album from "../Album/Album.vue"
 
 const props = defineProps({
   username: String,
@@ -13,6 +14,8 @@ const props = defineProps({
 
 const messages= ref([]);
 const albums = ref([]);
+
+const combinedList = ref([]);
 
 const {currentUsername} = useUserStore();
 
@@ -32,11 +35,14 @@ async function fetchMessages() {
 
   try {
     const response = await fetchy(`api/chat/${props.username}`, 'GET');
-    if(!response.chat.message){
+    console.log(`This is chat response: `,response)
+
+
+    if(!response.chat.messages){
         messages.value = [];
     }
     else{
-        messages.value = response.chat.message; // Assuming response is the array of messages
+        messages.value = response.chat.messages; // Assuming response is the array of messages
     }
   } catch (error) {
     const response = await fetchy('api/chat',"POST",{body:{
@@ -46,6 +52,7 @@ async function fetchMessages() {
     messages.value = []
   }
 
+  console.log(`This is the chat: `,messages.value)
   await nextTick();
   scrollToBottom();
 
@@ -85,6 +92,28 @@ async function sendMessage(message:string){
     }
 
     await fetchMessages();
+    await updateCombinedList();
+}
+
+async function createdAlbum(){
+  await fetchAlbum();
+  await updateCombinedList();
+}
+
+async function updateCombinedList() {
+    combinedList.value = [...messages.value, ...albums.value]
+        .map(item => {
+            if (item.photos) {  // Check if it has a 'message' property to distinguish
+                return { ...item, type: 'album' };
+            } else {
+                return { ...item, type: 'message' };
+            }
+        })
+        .sort((a, b) => new Date(a.dateUpdated).getTime() - new Date(b.dateUpdated).getTime());
+
+    console.log(`this is combined List: `,combinedList.value)
+    await nextTick();
+    scrollToBottom();
 }
 
 // Run fetchMessages on mount
@@ -94,15 +123,24 @@ onMounted(async () => {
   const user1 = await getProfile(currentUsername)
   usernameToID.set(user1Id,user1)
   // fetchAlbum();
-
+  updateInterval = setInterval(async () => {
+        await fetchMessages();
+        await fetchAlbum();
+        await updateCombinedList();
+    }, 1000);
 });
 
+onBeforeUnmount(() => {
+    // Clear the update interval when component is unmounted
+    clearInterval(updateInterval);
+}); 
 watch(
   () => [props.username, props.id, props.name],
   async ([newUsername, newId, newName], [oldUsername, oldId, oldName]) => {
     if (newUsername !== oldUsername) {
-      fetchMessages(); // If username changes, fetch new messages
-      fetchAlbum();
+      await fetchMessages(); // If username changes, fetch new messages
+      await fetchAlbum();
+      await updateCombinedList();
     }
     if (newId !== oldId || newName !== oldName) {
       usernameToID.set(newId, newName); // If id or name changes, update the map
@@ -117,26 +155,22 @@ watch(messages, ()=>{
 
 <template>
   <div class="chat-container">
-    <!-- Name always at the top -->
     <h2>{{ username }}</h2>
     <hr>
 
-    <!-- Message list -->
     <div class="messages" ref="messagesDiv">
-      <div v-for="([user,message], index) in messages" :key="index">
-        <p>{{ usernameToID.get(user) + ' : ' + message }}</p>
+      <div v-for="(item, index) in combinedList" :key="index">
+          <p v-if="item.type === 'message'">{{ usernameToID.get(item.user) + ' : ' + item.message }}</p>
+          <Album v-else-if="item.type === 'album'" :imgSources = "item.photos" :name="usernameToID.get(item.from)" :title="item.title" :id="item._id"/>
       </div>
     </div>
     <hr>
-    <MessageBox :username = "props.username" v-if = "props.name" @send="message => sendMessage(message)" />
+    <MessageBox :username="props.username" v-if="props.name" @send="message => sendMessage(message)" @created="createdAlbum"/>
   </div>
 </template>
 
 <style scoped>
-p{
-  margin-left: 10%;
-  padding-right:10%
-}
+
 
 .chat-container {
   display: flex;
@@ -148,6 +182,8 @@ p{
   flex: 1;  /* Allow it to grow and take available space */
   overflow-y: auto;  /* Add vertical scroll if content overflows */
   max-height: 90%;  /* Set the maximum height */
+  margin-left: 10%;
+  padding-right:10%
 }
 
 /* If you want to add space between name, message list, and MessageBox, you can use margin. For example: */
