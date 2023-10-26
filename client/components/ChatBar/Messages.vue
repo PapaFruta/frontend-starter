@@ -3,8 +3,9 @@ import { onMounted, ref, watch, nextTick,onBeforeUnmount } from "vue";
 import { fetchy } from "../../utils/fetchy";
 import MessageBox from "./MessageBox.vue";
 import { useUserStore } from "@/stores/user";
-import {getProfile, getUser} from "../../utils/getServices.ts"
+import {getProfile, getUser} from "../../utils/getServices"
 import Album from "../Album/Album.vue"
+import {MessageType, AlbumType, BodyType} from "../../utils/types"
 
 const props = defineProps({
   username: String,
@@ -12,16 +13,16 @@ const props = defineProps({
   name: String
 });
 
-const messages= ref([]);
-const albums = ref([]);
+const messages= ref<MessageType[]>([]);
+const albums = ref<AlbumType[]>([]);
 
-const combinedList = ref([]);
+const combinedList = ref<(MessageType|AlbumType)[]>([]);
 
 const {currentUsername} = useUserStore();
 
 const usernameToID = new Map();
 
-const messagesDiv = ref(null);
+const messagesDiv = ref<HTMLElement | null>(null);
 
 function scrollToBottom() {
   if (messagesDiv.value) {
@@ -45,9 +46,8 @@ async function fetchMessages() {
         messages.value = response.chat.messages; // Assuming response is the array of messages
     }
   } catch (error) {
-    const response = await fetchy('api/chat',"POST",{body:{
-        to:props.username
-    }})
+    const bodyData: BodyType = {to:props.username}
+    const response = await fetchy('api/chat',"POST",{body:bodyData})
     console.log('this is failing fetch')
     messages.value = []
   }
@@ -84,9 +84,10 @@ async function sendMessage(message:string){
     messages.value = []
 
     try{
+        const bodyData: BodyType = {to: props.username,
+                              message:message}
         const response = await fetchy(`api/chat`,"PATCH",
-                    {body:{to:props.username,
-                        message:message}})
+                    {body:bodyData})
     }catch{
         console.log('fail send response')
     }
@@ -103,10 +104,10 @@ async function createdAlbum(){
 async function updateCombinedList() {
     combinedList.value = [...messages.value, ...albums.value]
         .map(item => {
-            if (item.photos) {  // Check if it has a 'message' property to distinguish
-                return { ...item, type: 'album' };
+            if (item.type == "album") {  
+                return { ...item, type: 'album' as const };
             } else {
-                return { ...item, type: 'message' };
+                return { ...item, type: 'message' as const };
             }
         })
         .sort((a, b) => new Date(a.dateUpdated).getTime() - new Date(b.dateUpdated).getTime());
@@ -116,23 +117,23 @@ async function updateCombinedList() {
     scrollToBottom();
 }
 
+
 // Run fetchMessages on mount
 onMounted(async () => {
   // fetchMessages();
   const user1Id = await getUser(currentUsername)
   const user1 = await getProfile(currentUsername)
   usernameToID.set(user1Id,user1)
-  // fetchAlbum();
-  updateInterval = setInterval(async () => {
-        await fetchMessages();
-        await fetchAlbum();
-        await updateCombinedList();
-    }, 1000);
+  // updateInterval = setInterval(async () => {
+  //       await fetchMessages();
+  //       await fetchAlbum();
+  //       await updateCombinedList();
+  //   }, 1000);
 });
 
 onBeforeUnmount(() => {
     // Clear the update interval when component is unmounted
-    clearInterval(updateInterval);
+    // clearInterval(updateInterval);
 }); 
 watch(
   () => [props.username, props.id, props.name],

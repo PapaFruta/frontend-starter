@@ -18,11 +18,13 @@
         </div>
     </div>
 </template>
+
 <script setup lang="ts">
 import { initializeApp } from "firebase/app";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import { defineEmits, defineProps, ref as vueRef } from "vue";
 import { fetchy } from "../../utils/fetchy";
+import { BodyType } from "../../utils/types";
 
 const imageUploads = vueRef<File[]>([]);
 const imageSrcs = vueRef<string[]>([]);
@@ -101,11 +103,10 @@ async function createAlbum(){
     console.log(`This is album titled ${title.value}, with files: ${imageSrcs.value}`)
     console.log(`this is file: `,imageSrcs.value)
     try{
-        const response = await fetchy(`api/chat/album`,"POST",{body:{
-                                to: props.username,
+        const bodyData : BodyType = {to: props.username,
                                 title: title.value,
-                                photos: imageSrcs.value
-        }})
+                                photos: imageSrcs.value}
+        const response = await fetchy(`api/chat/album`,"POST",{body:bodyData})
         emit('created');
         alert(response.msg)
     }

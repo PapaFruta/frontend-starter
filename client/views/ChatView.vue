@@ -17,7 +17,7 @@
 import { ref } from "vue";
 import ChatBar from "../components/ChatBar/ChatBar.vue";
 import Messages from "../components/ChatBar/Messages.vue";
-import { getProfile, getUser } from "../utils/getServices.ts";
+import { getProfile, getUser } from "../utils/getServices";
 
 
 const currentChat = ref('');

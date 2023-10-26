@@ -7,12 +7,10 @@ const props = defineProps(["displayFriend", "friendList", "chat"]);
 
 const emit = defineEmits(['select']);
 
-const selectedFriend = ref(""); // to store the currently selected friend's username
+const selectedFriend = ref<string>(""); // to store the currently selected friend's username
 
-function selectFriend(username: String){
-    console.log(`This is username intake: ${username}`)
+function selectFriend(username: string){
     selectedFriend.value = username;  // update the selectedFriend when a friend is clicked
-    console.log(`this selected friend: ${selectedFriend.value}`)
     emit('select', username);
 }
 
@@ -45,13 +43,12 @@ function prevPage() {
           <Friend
                 v-for="friend in displayedFriends"
                 @select="(username) => selectFriend(username)"
-                :key="`${friend.username}-${selectedFriend.value === friend.username}`"
+                :key="friend.username"
                 :username="friend.username"
                 :profilePic="friend.profilePic"
                 :firstname="friend.firstname"
                 :lastname="friend.lastname"
                 :chat="chat"
-                :isSelected="selectedFriend.value === friend.username"
             />
             <div class = "pagination" v-if = "displayFriend.length > perPage">
               <button class = "pageButton" @click="prevPage" :disabled="currentPage === 1">Previous</button>

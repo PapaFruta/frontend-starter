@@ -1,14 +1,18 @@
 <script setup lang = "ts">
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { fetchy } from '../../utils/fetchy';
 import { getFriend } from '../../utils/getServices';
+import { PostType, ProposalType } from '../../utils/types';
 import Hangout from './Hangout.vue';
 import Post from './Post.vue';
 
-const friends = ref([])
-const postList = ref([])
-const hangoutList = ref([])
-const combineList = ref([])
+
+const friends = ref<string[]>([])
+const postList = ref<PostType[]>([])
+const hangoutList = ref<ProposalType[]>([])
+const combineList = ref<(PostType|ProposalType)[]>([])
+
+const castedCombineList = computed<(PostType | ProposalType)[]>(() => combineList.value as (PostType | ProposalType)[]);
 
 async function getPosts(){
 
@@ -18,7 +22,13 @@ async function getPosts(){
             const response = await fetchy(`api/posts/${friendUser}`,'GET')
             
             for(const r of response){
-                postList.value.push(r);
+                postList.value.push({
+                            type:"post",
+                            author:r.author,
+                            caption:r.caption,
+                            photos:r.photos,
+                            dateCreated:new Date(r.dateCreated)
+                        });
             }
         }catch{
             console.log(`Failed fetching posts for ${friendUser}`)
@@ -38,9 +48,18 @@ async function getHangouts(){
             const response = await fetchy(`api/hangout/user/${friendUser}`,"GET")
             console.log(`the response is here ${friendUser}`,response)
             for(const r of response.hangout){
-                r.username = friendUser
                 console.log(`this is hangout for ${r.username}`,r)
-                hangoutList.value.push(r);
+                hangoutList.value.push({
+                            type:'hangout',
+                            activity:r.activity,
+                            username:friendUser,
+                            location:r.location,
+                            date:r.date,
+                            acceptee:r.acceptee,
+                            _id:r._id,
+                            author:r.author,
+                            dateCreated:new Date(r.dateCreated)
+                        });
             }
         }catch{
             console.log(`Failed fetching posts from ${friendUser}`)
@@ -53,8 +72,7 @@ async function getHangouts(){
 function updateCombinedList(){
     console.log(`this is hangout: `,hangoutList.value)
     combineList.value = [...postList.value, ...hangoutList.value]
-        .map(item => ({...item, type: item.caption ? 'post' : 'hangout'})) // Add an item type
-        .sort((a, b) => new Date(b.dateCreated) - new Date(a.dateCreated)); // Sort by postedAt
+    .sort((a, b) => b.dateCreated.getTime() - a.dateCreated.getTime()); // Sort by dateCreated
 }
 
 onMounted(async ()=>{
@@ -69,7 +87,7 @@ onMounted(async ()=>{
 </script>
 <template>
     <div>
-        <div v-for="(item, index) in combineList" :key="index">
+        <div v-for="(item, index) in castedCombineList" :key="index">
             <Post v-if="item.type === 'post'" :name="item.author" :caption="item.caption" :photo="item.photos" />
             <Hangout v-else :activity="item.activity" :author="item.username" :location="item.location" :date="item.date" :acceptee = "item.acceptee" :id= "item._id" :showAcceptButton="true" />
         </div>

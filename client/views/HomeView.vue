@@ -7,7 +7,7 @@ const { currentUsername, isLoggedIn } = storeToRefs(useUserStore());
 
 <template>
   <main class="background-blue">
-    <img src="client\assets\images\logo.png" />
+    <img src="../assets/images/logo.png" />
     <router-link :to="isLoggedIn ? '/friend' : '/login'" class="center-button">
       <button class="centered-button">{{!isLoggedIn ? "Getting Started" : "Friend"}}</button>
     </router-link>

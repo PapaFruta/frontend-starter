@@ -4,10 +4,10 @@ import { fetchy } from "../../utils/fetchy";
 import FriendList from "./FriendList.vue";
 import Request from "./Request.vue";
 import AddFriend from "./addFriend.vue";
-const friendList: Ref<Object[]> = ref([]);
-const requestList: Ref<Object[]> = ref([]);
+const requestList: Ref<FriendType[]> = ref([]);
 const removelist: Ref<string[]> = ref([]);
-
+const displayRequest = ref(false)
+const displayFriend = ref(false)
 const removeFriend = ref(false);
 
 function updateDisplayFriend(){
@@ -18,7 +18,6 @@ function updateDisplayRequest(){
     displayRequest.value = !displayRequest.value;
 }
 
-const testFriendList = friendList.value
 
 const perPage = 7;
 const currentPage = ref(1); // starts from 1
@@ -47,7 +46,7 @@ async function updateRequest(){
 
     try{
         let requestResponse = await fetchy("api/friend/requests","GET")
-        let to_ids = requestResponse.filter((item:Object)=>item.status == "pending").map((item:Object) => item.from)
+        let to_ids = requestResponse.filter((item:RequestType)=>item.status == "pending").map((item:RequestType) => item.from)
         let unique_to_ids = new Set(to_ids);
 
         for(const username of unique_to_ids){
@@ -187,7 +186,16 @@ function selectFriend(username:string){
 
 <style scoped>
 .cancel-button{
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    margin-top: 3%;
+    margin-left: 65%;
+    cursor: pointer;
     background-color: #F8C511;
+    color: #fff;
+    font-size: 3vh;
+    transition: background-color 0.2s;
 }
 
 .cancel-button:hover {

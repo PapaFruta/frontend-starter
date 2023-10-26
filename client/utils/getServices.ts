@@ -1,4 +1,4 @@
-import { fetchy } from "./fetchy.ts";
+import { fetchy } from "./fetchy";
 
 export async function getFullProfile(username: string){
     try{
@@ -8,7 +8,7 @@ export async function getFullProfile(username: string){
     catch{
         console.log(`Fail fetching full user profile for ${username}`)
     }
-    return username
+    return {firstname: 'Error', lastname: 'Error', profilePic: 'Error'}
 }
 
 export async function getProfile(username:string){
@@ -28,7 +28,7 @@ export async function getUsername(id:string){
         return response.username
     }
     catch{
-        console.log(`Fail fetching user id for ${username}`)
+        console.log(`Fail fetching user id for ${id}`)
     }
     return id
 }
@@ -46,7 +46,11 @@ export async function getUser(username:string){
     return username
 }
 
-export async function getFriend(){
+/**
+ * 
+ * @returns List of Username
+ */
+export async function getFriend():Promise<string[]>{
     const friendList = []
 
     try{

@@ -11,13 +11,14 @@ const props = withDefaults(
     author: String,
     location: String,
     date: String,
-    acceptee?: Array<string> | undefined,
+    acceptee: Array<string>,
     showAcceptButton: Boolean
   }>(),
   {
-    acceptee: undefined
+    acceptee: () => []
   }
 );
+
 
 const {currentUsername} = useUserStore();
 
@@ -45,7 +46,7 @@ async function cancelInvite(){
   location.reload()
 }
 
-const accepteesUsernames = ref([]); // To store usernames
+const accepteesUsernames = ref<string[]>([]); // To store usernames
 
 onMounted(async () => {
   if (props.acceptee && props.acceptee.length > 0) {

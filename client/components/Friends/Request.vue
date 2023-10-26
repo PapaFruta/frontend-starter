@@ -8,7 +8,7 @@ const { username, profilePic, firstname, lastname } = defineProps({
     lastname: String,
 });
 
-const displayedName = ref(firstname + ' ' + lastname[0] + '.');
+const displayedName = ref(firstname + (lastname ? ' ' + lastname[0] + '.' : ''));
 const emit = defineEmits(['accept','reject'])
 
 function acceptRequest(){

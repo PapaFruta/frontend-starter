@@ -6,14 +6,14 @@ import MultiImageUploader from './MultiImageUploader.vue';
 const props = defineProps({
     id:String,
     name: String,
-    imgSources: Array,
+    imgSources: Array<string>,
     title: String,
 })
 
 const showUpload = ref(false);
-const displayPhoto = ref([...props.imgSources])
+const displayPhoto = ref<string[]>(props.imgSources ? [...props.imgSources] : []);
 
-async function addPhoto(photos){
+async function addPhoto(photos:Array<string>){
     try{
         const response = await fetchy(`api/chat/album/${props.id}`,"PATCH",{body:{
             update:{photos:[...displayPhoto.value,...photos]}
