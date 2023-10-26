@@ -67,6 +67,7 @@ async function fetchAlbum(){
     const response = await fetchy(`api/chat/album/${props.username}`,"GET")
 
     for(const r of response){
+      r.type = "album"
       albums.value.push(r)
     }
 
@@ -161,7 +162,9 @@ watch(messages, ()=>{
 
     <div class="messages" ref="messagesDiv">
       <div v-for="(item, index) in combinedList" :key="index">
-          <p v-if="item.type === 'message'">{{ usernameToID.get(item.user) + ' : ' + item.message }}</p>
+        <p v-if="item.type === 'message' && usernameToID.get(item.user) && item.message">
+  {{ usernameToID.get(item.user) + ' : ' + item.message }}
+</p>
           <Album v-else-if="item.type === 'album'" :imgSources = "item.photos" :name="usernameToID.get(item.from)" :title="item.title" :id="item._id"/>
       </div>
     </div>

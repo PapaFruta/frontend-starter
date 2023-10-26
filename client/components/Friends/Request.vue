@@ -31,10 +31,10 @@ function rejectRequest(){
         </div>
         <div class = "buttons">
             <button class="accept-button" @click="acceptRequest">
-            <img class="accept-img" src="client\assets\images\accept.png" alt="Clickable accept"/>
+            <img class="accept-img" src="../../assets/images/accept.png" alt="Clickable accept"/>
             </button>
             <button class="remove-button" @click="rejectRequest">
-                <img class="remove-img" src="client\assets\images\remove.png" alt="Clickable remove"/>
+                <img class="remove-img" src="../../assets/images/remove.png" alt="Clickable remove"/>
             </button>
         </div>
        

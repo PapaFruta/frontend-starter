@@ -148,8 +148,8 @@ function selectFriend(username:string){
     <div class = "links-row">
         <h2>Friends 
         <button class = "displayButton" @click = "updateDisplayFriend">
-            <img class = "displayFriend" v-if = "displayFriend" src = "client\assets\images\down-arrow.png"/>
-            <img class = "displayFriend" v-if = "!displayFriend" src = "client\assets\images\left-arrow.png"/>
+            <img class = "displayFriend" v-if = "displayFriend" src = "../../assets/images/down-arrow.png"/>
+            <img class = "displayFriend" v-if = "!displayFriend" src = "../../assets/images/left-arrow.png"/>
         </button>
         <button class = "remove-button" @click="toggleRemove"> Remove </button>
         <button v-if = "removeFriend" class = "cancel-button" @click="cancelRemove"> Cancel </button>
@@ -167,8 +167,8 @@ function selectFriend(username:string){
                 @select = "(username)=>{selectFriend(username)}"/>
        <h2>Request 
         <button class = "displayButton" @click = "updateDisplayRequest">
-            <img class = "displayRequest" v-if = "displayRequest" src = "client\assets\images\down-arrow.png"/>
-            <img class = "displayRequest" v-if = "!displayRequest" src = "client\assets\images\left-arrow.png"/>
+            <img class = "displayRequest" v-if = "displayRequest" src = "../../assets/images/down-arrow.png"/>
+            <img class = "displayRequest" v-if = "!displayRequest" src = "../../assets/images/left-arrow.png"/>
         </button></h2>
         <Request
               v-for="friend in requestList"

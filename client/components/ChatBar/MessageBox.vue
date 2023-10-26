@@ -36,8 +36,8 @@ function createdAlbum(){
 
     <div class="chatBox">
         <input v-model="message" type="text" @keyup.enter="sendMessage"/>
-        <button @click="sendMessage"><img class="icon" src="client\assets\images\send.png"/></button>
-        <button @click="startAlbum"><img class="icon" src="client\assets\images\image-gallery.png"/></button>
+        <button @click="sendMessage"><img class="icon" src="../../assets/images/send.png"/></button>
+        <button @click="startAlbum"><img class="icon" src="../../assets/images/image-gallery.png"/></button>
     </div>
 </template>
 
