@@ -4,6 +4,9 @@ import { fetchy } from "../../utils/fetchy";
 import FriendList from "./FriendList.vue";
 import Request from "./Request.vue";
 import AddFriend from "./addFriend.vue";
+import {RequestType, FriendType} from "../../utils/types"
+
+const friendList: Ref<RequestType[]> = ref([]);
 const requestList: Ref<FriendType[]> = ref([]);
 const removelist: Ref<string[]> = ref([]);
 const displayRequest = ref(false)
