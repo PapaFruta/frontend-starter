@@ -1,26 +1,31 @@
 <script setup lang = "ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, defineProps, onMounted, ref, watch } from 'vue';
+import { useUserStore } from '../../stores/user';
 import { fetchy } from '../../utils/fetchy';
 import { getFriend } from '../../utils/getServices';
 import { PostType, ProposalType } from '../../utils/types';
 import Hangout from './Hangout.vue';
 import Post from './Post.vue';
 
+const props = defineProps({
+    update:Number
+})
 
 const friends = ref<string[]>([])
 const postList = ref<PostType[]>([])
 const hangoutList = ref<ProposalType[]>([])
 const combineList = ref<(PostType|ProposalType)[]>([])
 
+const {currentUsername} = useUserStore();
+
 const castedCombineList = computed<(PostType | ProposalType)[]>(() => combineList.value as (PostType | ProposalType)[]);
 
 async function getPosts(){
-
+    postList.value = []
     for(const friend in friends.value){
         const friendUser = friends.value[friend]
         try{
             const response = await fetchy(`api/posts/${friendUser}`,'GET')
-            
             for(const r of response){
                 postList.value.push({
                             type:"post",
@@ -33,22 +38,16 @@ async function getPosts(){
         }catch{
             console.log(`Failed fetching posts for ${friendUser}`)
         }
-       
     }
-    updateCombinedList();
-
 }
 
 async function getHangouts(){
-    
+    hangoutList.value = []
     for (const friend in friends.value){
         const friendUser = friends.value[friend]
-
         try{
             const response = await fetchy(`api/hangout/user/${friendUser}`,"GET")
-            console.log(`the response is here ${friendUser}`,response)
             for(const r of response.hangout){
-                console.log(`this is hangout for ${r.username}`,r)
                 hangoutList.value.push({
                             type:'hangout',
                             activity:r.activity,
@@ -64,25 +63,30 @@ async function getHangouts(){
         }catch{
             console.log(`Failed fetching posts from ${friendUser}`)
         }
-
     }
-    updateCombinedList();
 }
 
-function updateCombinedList(){
-    console.log(`this is hangout: `,hangoutList.value)
-    combineList.value = [...postList.value, ...hangoutList.value]
-    .sort((a, b) => b.dateCreated.getTime() - a.dateCreated.getTime()); // Sort by dateCreated
-}
+watch(() => props.update, async (newValue, oldValue) => {
+    if (newValue !== oldValue) {
+        await getPosts();
+        await getHangouts();
+        updateCombinedList();
+    }
+});
 
 onMounted(async ()=>{
     friends.value = await getFriend();
+    friends.value.push(currentUsername);
     await getPosts();
     await getHangouts();
     updateCombinedList();
-
-    console.log(`this is combined list: `,combineList)
 })
+
+
+async function updateCombinedList(){
+    combineList.value = [...postList.value, ...hangoutList.value]
+    .sort((a, b) => b.dateCreated.getTime() - a.dateCreated.getTime()); // Sort by dateCreated
+}
 
 </script>
 <template>

@@ -54,8 +54,8 @@ input{
 }
 
 .add{
-    background-color: #5B8FF3;
-    border: solid 2px #1900B6 ;
+    background-color: #8DACC4;
+    border: solid 2px #6C9CB6 ;
     color:white;
     border:none;
     font-size: 4vh;
@@ -63,7 +63,7 @@ input{
 }
 
 .add:hover{
-    background-color: #0056b3;
+    background-color: #6C9CB6;
 }
 
 .form {

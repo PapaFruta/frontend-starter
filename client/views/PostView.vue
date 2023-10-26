@@ -15,6 +15,13 @@ function createPost(){
 function proposeHangout(){
     hangoutForm.value = !hangoutForm.value;
 }
+
+const postAndHangoutRef = ref(0);
+
+function handlePostChange(){
+    postAndHangoutRef.value = postAndHangoutRef.value+1
+}
+
 </script>
 
 <template>
@@ -24,10 +31,10 @@ function proposeHangout(){
             <ActivityButton
             @create = "createPost"
             @propose = "proposeHangout"/>
-            <Postform v-if="postForm"/>
-            <HangoutForm v-if = "hangoutForm"/>
+            <Postform v-if="postForm" @created="handlePostChange"/>
+            <HangoutForm v-if = "hangoutForm" @created="handlePostChange"/>
             <hr>
-            <PostAndHangout/>
+            <PostAndHangout :update = "postAndHangoutRef"/>
         </div>
     </div>
     

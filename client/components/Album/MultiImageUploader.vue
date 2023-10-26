@@ -161,13 +161,13 @@ button {
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    background-color: #007BFF;
+    background-color: #8DACC4;
     color: #fff;
     font-weight: bold;
     transition: background-color 0.2s;
 }
 
 button:hover {
-    background-color: #0056b3;
+    background-color: #6C9CB6;
 }
 </style>

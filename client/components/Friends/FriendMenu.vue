@@ -61,8 +61,7 @@ async function updateRequest(){
     }
     }catch{
             requestList.value = prev
-        }
-    
+    }
 }
 
 async function acceptRequest(username:string){
@@ -72,7 +71,8 @@ async function acceptRequest(username:string){
     }catch{
         console.log('failed accept request')
     }
-    updateRequest();
+    await updateRequest();
+    await updateFriend();
 }
 
 async function rejectRequest(username:string){

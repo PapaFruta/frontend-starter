@@ -1,10 +1,13 @@
 <script setup lang = "ts">
-import { ref } from 'vue';
+import { ref, defineEmits} from 'vue';
 import { fetchy } from '../../utils/fetchy';
 
 const activity = ref('');
 const location = ref('');
 const date = ref('')
+
+const emits = defineEmits(['created'])
+
 
 async function proposalHangout(){
 
@@ -17,6 +20,7 @@ async function proposalHangout(){
 
         console.log(`this is hangout created: `, response.hangout)
         alert(`Hangout created successfully!`)
+        emits('created')
     }catch{
         console.log(`Fail to proposal hangout`);
     }

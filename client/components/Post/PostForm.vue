@@ -1,5 +1,5 @@
 <script setup lang = "ts">
-import { ref } from 'vue';
+import { ref , defineEmits} from 'vue';
 import { fetchy } from '../../utils/fetchy';
 import ImageUploader from '../Authentication/ImageUploader.vue';
 
@@ -10,6 +10,8 @@ function handleUpload(url:string){
     imgSrc.value = url;
 }
 
+const emits = defineEmits(['created'])
+
 async function uploadPost(){
     try{
         const response = await fetchy(`api/posts`,"POST",{body:{
@@ -17,6 +19,7 @@ async function uploadPost(){
             caption:caption.value,
         }})
         alert('Post Successfully Uploaded')
+        emits('created')
     }
     catch{
         console.log('failed to upload post')
