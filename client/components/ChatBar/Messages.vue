@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { onMounted, ref, watch, nextTick,onBeforeUnmount } from "vue";
-import { fetchy } from "../../utils/fetchy";
-import MessageBox from "./MessageBox.vue";
 import { useUserStore } from "@/stores/user";
-import {getProfile, getUser} from "../../utils/getServices"
-import Album from "../Album/Album.vue"
-import {MessageType, AlbumType, BodyType} from "../../utils/types"
+import { nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { fetchy } from "../../utils/fetchy";
+import { getProfile, getUser } from "../../utils/getServices";
+import { AlbumType, BodyType, MessageType } from "../../utils/types";
+import Album from "../Album/Album.vue";
+import MessageBox from "./MessageBox.vue";
 
 const props = defineProps({
   username: String,
@@ -125,16 +125,15 @@ onMounted(async () => {
   const user1Id = await getUser(currentUsername)
   const user1 = await getProfile(currentUsername)
   usernameToID.set(user1Id,user1)
-  // updateInterval = setInterval(async () => {
-  //       await fetchMessages();
-  //       await fetchAlbum();
-  //       await updateCombinedList();
-  //   }, 1000);
+  updateInterval = setInterval(async () => {
+        await fetchMessages();
+        await fetchAlbum();
+        await updateCombinedList();
+    }, 2000);
 });
 
 onBeforeUnmount(() => {
-    // Clear the update interval when component is unmounted
-    // clearInterval(updateInterval);
+    clearInterval(updateInterval);
 }); 
 watch(
   () => [props.username, props.id, props.name],
