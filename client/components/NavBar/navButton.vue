@@ -24,7 +24,7 @@ const toggleSelect = () => {
 <template>
   <div class="image-link-component" :class="{ 'is-selected': isSelected }"  @click="toggleSelect">
     <router-link :to="route_link" class="text-link">
-        <img :src="imgSrc" :alt="title" class="image-class" />
+      <img :src="imgSrc" :alt="title" class="image-class" />
         <div class = "title">{{ title }}</div>
     </router-link>
   </div>
