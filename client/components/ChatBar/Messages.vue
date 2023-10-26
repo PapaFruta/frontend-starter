@@ -13,6 +13,9 @@ const props = defineProps({
   name: String
 });
 
+let updateInterval: ReturnType<typeof setInterval> | null = null;
+
+
 const messages= ref<MessageType[]>([]);
 const albums = ref<AlbumType[]>([]);
 
@@ -133,8 +136,12 @@ onMounted(async () => {
 });
 
 onBeforeUnmount(() => {
+  if (updateInterval) {
     clearInterval(updateInterval);
-}); 
+    updateInterval = null;
+  }
+});
+
 watch(
   () => [props.username, props.id, props.name],
   async ([newUsername, newId, newName], [oldUsername, oldId, oldName]) => {
