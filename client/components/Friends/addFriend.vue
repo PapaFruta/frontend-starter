@@ -30,8 +30,8 @@ async function addFriend(){
 
 <style scoped>
 .addFriend{
-    background-color: #5B8FF3;
-    border: solid 2px #1900B6 ;
+    background-color: #8DACC4;
+    border: solid 2px #6C9CB6 ;
     width: 90%;
     color:white;
     border:none;
@@ -42,7 +42,7 @@ async function addFriend(){
 }
 
 .addFriend:hover{
-    background-color: #0056b3;
+    background-color: #6C9CB6;
 }
 
 

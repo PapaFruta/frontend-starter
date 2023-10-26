@@ -33,7 +33,7 @@ const toggleSelect = () => {
 <style>
 /* Your styles here */
 .image-link-component {
-    margin-top: 10%;
+    padding-bottom: 10%;
     padding-top: 10%;
     display: flex; 
     flex-direction: column; 
@@ -43,7 +43,7 @@ const toggleSelect = () => {
 }
 
 .image-link-component:hover {
-    background-color: #D9D9D9; /* color when hovered */
+    background-color: #E2E2E8; /* color when hovered */
 }
 
 .image-link-component:is-selected {
@@ -63,6 +63,8 @@ const toggleSelect = () => {
 
 .title{
     font-size: 1.25vw;
+    color: #F9F9F0;
+    font-weight: 700;
 }
 
 </style>

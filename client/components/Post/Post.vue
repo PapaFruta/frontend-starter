@@ -1,6 +1,9 @@
 <template>
+  <div class = "post">
     <img :src="props.photo" alt="photo" />
     <p><strong>{{ props.name }}: </strong>{{ props.caption }}</p>
+  </div>
+    
     <hr>
 </template>
 
@@ -15,13 +18,14 @@ const props = defineProps({
 
 </script>
 <style scoped>
+
 img {
   width: 100%;
   max-width: 450px;
   height: auto;
   border-radius: 4px;
   margin-bottom: 10px;
-  background-color: aliceblue;
+  background-color: #8DACC4;
   padding: 2%;
 }
 

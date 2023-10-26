@@ -51,9 +51,9 @@ onBeforeMount(async () => {
   position: absolute; 
   top: 50%; /* move the top edge of the pseudo-element to the center of the container */
   right: 0; /* aligned to the right of the .nav container */
-  width: 1px; /* width of the bar, you can adjust as necessary */
+  width: 2px; /* width of the bar, you can adjust as necessary */
   height: 100%; /* height of the bar */
-  background-color: slategrey; /* or any color you prefer */
+  background-color: #6C9CB6; /* or any color you prefer */
   transform: translateY(-50%); /* shift the pseudo-element up by half of its height */
 }
 
@@ -61,6 +61,8 @@ onBeforeMount(async () => {
   /* padding-left: 1%; */
   flex-grow: 1; 
   overflow-y: auto;
+  background-color: #F9F9F0;
+  color: #151C30;
 }
 
 /* Other styles remain unchanged */

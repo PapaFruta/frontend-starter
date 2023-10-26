@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { Ref, computed, onMounted, ref } from "vue";
 import { fetchy } from "../../utils/fetchy";
+import { FriendType, RequestType } from "../../utils/types";
 import FriendList from "./FriendList.vue";
 import Request from "./Request.vue";
 import AddFriend from "./addFriend.vue";
-import {RequestType, FriendType} from "../../utils/types"
 
 const friendList: Ref<RequestType[]> = ref([]);
 const requestList: Ref<FriendType[]> = ref([]);
@@ -145,7 +145,8 @@ function selectFriend(username:string){
 </script>
 
 <template>
-  <div >
+    <div class = "background-blue">
+        <div >
     <div class = "links-row">
         <h2>Friends 
         <button class = "displayButton" @click = "updateDisplayFriend">
@@ -186,9 +187,16 @@ function selectFriend(username:string){
     <AddFriend/>
 </div>
   </div>
+    </div>
+  
 </template>
 
 <style scoped>
+.background-blue{
+    background-color: #F9F9F0;
+    color: #151C30;
+}
+
 .cancel-button{
     padding: 5px 10px;
     border: none;
@@ -196,14 +204,14 @@ function selectFriend(username:string){
     margin-top: 3%;
     margin-left: 65%;
     cursor: pointer;
-    background-color: #F8C511;
+    background-color: #66534B;
     color: #fff;
     font-size: 3vh;
     transition: background-color 0.2s;
 }
 
 .cancel-button:hover {
-    background-color: #F8A911;  /* Darker red on hover */
+    background-color: #EFB679;  /* Darker red on hover */
 }
 
 .container {
@@ -245,14 +253,14 @@ function selectFriend(username:string){
     border-radius: 4px;
     margin-left: 18%;
     cursor: pointer;
-    background-color: #5B8FF3;
-    color: #fff;
+    background-color: #8DACC4;
+    color: #F9F9F0;
     font-size: 3vh;
     transition: background-color 0.2s;
 }
 
 .remove-button:hover {
-    background-color: #0056b3;
+    background-color: #6C9CB6;
 }
 
 </style>

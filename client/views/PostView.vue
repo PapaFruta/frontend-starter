@@ -18,21 +18,40 @@ function proposeHangout(){
 </script>
 
 <template>
-    <h2>Posts</h2>
-    <div class = "main-section">
-        <ActivityButton
-        @create = "createPost"
-        @propose = "proposeHangout"/>
-        <Postform v-if="postForm"/>
-        <HangoutForm v-if = "hangoutForm"/>
-        <hr>
-        <PostAndHangout/>
+    <div class = "background-blue">
+        <h2>Posts</h2>
+        <div class = "main-section">
+            <ActivityButton
+            @create = "createPost"
+            @propose = "proposeHangout"/>
+            <Postform v-if="postForm"/>
+            <HangoutForm v-if = "hangoutForm"/>
+            <hr>
+            <PostAndHangout/>
+        </div>
     </div>
+    
     
 </template>
 
 <style scoped>
+body {
+  margin: 0;
+}
+
+.background-blue{
+  background-color: #F9F9F0;
+  /* height: 100vh; */
+}
+
+h2{
+    margin: 0;
+    padding-left: 5%;
+    padding-top: 2%;
+    color: #151C30;
+}
 .main-section {
+    padding-top: 3%;
     display: flex;
     flex-direction: column; 
     justify-content: center;

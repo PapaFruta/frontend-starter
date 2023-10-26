@@ -24,6 +24,7 @@ import NavButton from './navButton.vue';
   flex-direction: column; /* stack children vertically */
   height: 100vh; /* full height of the viewport */
   justify-content: space-between; /* distributes items evenly, with first item at start and last item at end */
+  background-color: #8DACC4;
 }
 
 .spacer {

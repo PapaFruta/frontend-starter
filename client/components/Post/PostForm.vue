@@ -54,6 +54,9 @@ async function uploadPost(){
     margin-left: 10%;
     padding: 2%;
     padding-right: 24%;
+    background-color: #F9F9F0;
+    border: #8DACC4 solid 1px;
+    border-radius: 2px;
 }
 
 .main-break{
@@ -78,13 +81,13 @@ button {
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    background-color: #007BFF;
-    color: #fff;
+    background-color: #8DACC4;
+    color: #F9F9F0;
     font-weight: bold;
     transition: background-color 0.2s;
 }
 
 button:hover {
-    background-color: #0056b3;
+  background-color: #6C9CB6;
 }
 </style>
