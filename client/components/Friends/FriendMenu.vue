@@ -82,7 +82,8 @@ async function rejectRequest(username:string){
     }catch{
         console.log('failed rejected request')
     }
-    updateRequest();
+    await updateRequest();
+    await updateFriend();
 }
 
 async function updateFriend(){

@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
+import { useAuthStore } from "./auth";
 
 import { BodyT, fetchy } from "@/utils/fetchy";
 
@@ -7,6 +8,7 @@ export const useUserStore = defineStore(
   "user",
   () => {
     const currentUsername = ref("");
+    const {getRecentStatus} = useAuthStore();
 
     const isLoggedIn = computed(() => currentUsername.value !== "");
 
@@ -30,6 +32,7 @@ export const useUserStore = defineStore(
       try {
         const { username } = await fetchy("api/session", "GET", { alert: false });
         currentUsername.value = username;
+        await getRecentStatus();
       } catch {
         currentUsername.value = "";
       }

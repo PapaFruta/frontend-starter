@@ -1,13 +1,18 @@
 <script setup lang="ts">
+import ChatImg from "@/assets/images/chat.png";
+import FriendImg from "@/assets/images/friends.png";
+import PostImg from "@/assets/images/happy.png";
+import SettingImg from "@/assets/images/setting.png";
 import NavButton from './navButton.vue';
+
 </script>
 <template>
   <div class="container">
-    <NavButton imgSrc="../../assets/images/chat.png" title="Chat" route_link="/chat"/>
-    <NavButton imgSrc="../../assets/images/friends.png" title="Friend" route_link="/friend"/>
-    <NavButton imgSrc="../../assets/images/Happy.png" title="Post" route_link="/post"/>
+    <NavButton :imgSrc="ChatImg" title="Chat" route_link="/chat"/>
+    <NavButton :imgSrc="FriendImg" title="Friend" route_link="/friend"/>
+    <NavButton :imgSrc="PostImg" title="Post" route_link="/post"/>
     <div class="spacer"></div> 
-    <NavButton imgSrc="../../assets/images/setting.png" title="Setting" route_link="/setting" class="setting"/>
+    <NavButton :imgSrc="SettingImg" title="Setting" route_link="/setting" class="setting"/>
     <div class="bar"></div>
     <!-- <slot></slot> -->
   </div>
