@@ -43,10 +43,10 @@ const uploadImage = () => {
     console.log(response)
     getDownloadURL(ref(storage, response.ref.fullPath)).then((url)=>
     {
-      // console.log('this is url from uploader: ',url);
       imageSrc.value = url
       emit("update:imageSrc",url)
     })
+    console.log(`this is url from imageUploader: ${imageSrc.value}`);
     alert(`Image Uploaded!`)
   })
 }

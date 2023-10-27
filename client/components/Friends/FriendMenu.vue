@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { Ref, computed, onMounted, ref } from "vue";
+import { Ref, computed, onMounted, ref, onBeforeUnmount } from "vue";
 import { fetchy } from "../../utils/fetchy";
 import { FriendType, RequestType } from "../../utils/types";
 import FriendList from "./FriendList.vue";
 import Request from "./Request.vue";
 import AddFriend from "./addFriend.vue";
+import { useUserStore } from "../../stores/user";
 
 const friendList: Ref<RequestType[]> = ref([]);
 const requestList: Ref<FriendType[]> = ref([]);
@@ -12,6 +13,10 @@ const removelist: Ref<string[]> = ref([]);
 const displayRequest = ref(false)
 const displayFriend = ref(false)
 const removeFriend = ref(false);
+
+const {currentUsername } = useUserStore();
+
+let interval: number | undefined;
 
 function updateDisplayFriend(){
     displayFriend.value = !displayFriend.value;
@@ -49,7 +54,7 @@ async function updateRequest(){
 
     try{
         let requestResponse = await fetchy("api/friend/requests","GET")
-        let to_ids = requestResponse.filter((item:RequestType)=>item.status == "pending").map((item:RequestType) => item.from)
+        let to_ids = requestResponse.filter((item:RequestType)=>(item.status == "pending" && item.from !== currentUsername)).map((item:RequestType) => item.from)
         let unique_to_ids = new Set(to_ids);
 
         for(const username of unique_to_ids){
@@ -136,6 +141,16 @@ function cancelRemove(){
 onMounted(async () => {
     updateFriend();
     updateRequest();
+
+    interval = setInterval(() => {
+    updateRequest();
+}, 5000) as any; 
+
+});
+
+onBeforeUnmount(() => {
+    // Clear the interval when component is about to unmount
+    if (interval) clearInterval(interval);
 });
 
 function selectFriend(username:string){

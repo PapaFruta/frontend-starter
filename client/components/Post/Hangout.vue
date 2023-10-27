@@ -21,29 +21,28 @@ const props = withDefaults(
 
 
 const {currentUsername} = useUserStore();
+const hasAccepted = ref(props.acceptee.includes(currentUsername));
 
 async function acceptInvite(){
-  // console.log(`this is hangout id: ${props.id}`)
   try{
-    const response = await fetchy(`api/hangout/${props.id}/accept`,"PATCH")
-    alert('Successfully Accepted Invite')
+    const response = await fetchy(`api/hangout/${props.id}/accept`,"PATCH");
+    alert('Successfully Accepted Invite');
+    hasAccepted.value = true;
   }
   catch{
-    console.log(`Fail accepting invite`)
+    console.log(`Fail accepting invite`);
   }
-  location.reload()
-
 }
 
 async function cancelInvite(){
   try{
-    const response = await fetchy(`api/hangout/${props.id}/cancel`,"PATCH")
-    alert('Successfully Cancelled Invite')
+    const response = await fetchy(`api/hangout/${props.id}/cancel`,"PATCH");
+    alert('Successfully Cancelled Invite');
+    hasAccepted.value = false;
   }
   catch{
-    console.log(`Fail cancel invite`)
+    console.log(`Fail cancel invite`);
   }
-  location.reload()
 }
 
 const accepteesUsernames = ref<string[]>([]); // To store usernames
@@ -70,12 +69,15 @@ onMounted(async () => {
           <li v-for="(username, index) in accepteesUsernames" :key="index">{{ username }}</li>
       </ul>
   </div>
-  <div v-else-if="showAcceptButton && !accepteesUsernames?.includes(currentUsername)" class="button-container">
-    <button @click = "acceptInvite">Accept Invite</button>
+  
+<div v-if="showAcceptButton">
+  <div v-if="!hasAccepted" class="button-container">
+    <button @click="acceptInvite">Accept Invite</button>
   </div>
-  <div v-if="showAcceptButton && accepteesUsernames?.includes(currentUsername)" class="button-container">
-    <button class="cancel-button" @click = "cancelInvite">Cancel Acceptance</button>
+  <div v-if="hasAccepted" class="button-container">
+    <button class="cancel-button" @click="cancelInvite">Cancel Acceptance</button>
   </div>
+</div>
   <hr>
 </template>
 
